@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["bun", "run", "--watch", "src/app.js"]
+CMD ["bun", "run", "--watch", "src/server.js"]
