@@ -49,4 +49,12 @@ app.use(cookieParser(cookieOptions));
 // app.use(notFound);
 // app.use(errorHandler);
 
+// Routes
+import userRoutes from "./admin/user/user.routes.js";
+app.use("/api/users", userRoutes);
+
+app.get("/", (req, res) => {
+    res.send("API is running");
+});
+
 export default app;
