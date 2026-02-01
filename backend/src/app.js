@@ -1,1 +1,52 @@
-console.log("COUCOU")
+import express from "express";
+import path from "path";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import helmet from "helmet";
+import { fileURLToPath } from "url";
+import cors from "cors";
+
+const currentFilePath = fileURLToPath(import.meta.url);
+const currentDir = path.dirname(currentFilePath);
+
+dotenv.config({
+    path: path.join(currentDir, '..', '..', '.env')
+});
+
+const FRONTEND_BASE_URL = String(process.env.FRONTEND_BASE_URL);
+
+const corsOption = {
+  origin: [FRONTEND_BASE_URL],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204
+};
+
+const cookieOptions = {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/"
+};
+
+const app = express();
+
+app.use(helmet())
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors(corsOption));
+app.use(cookieParser(cookieOptions));
+
+// 404 + erreurs
+// app.use(notFound);
+// app.use(errorHandler);
+
+export default app;
