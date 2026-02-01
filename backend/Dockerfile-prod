@@ -1,0 +1,21 @@
+FROM oven/bun:1-alpine
+
+RUN addgroup -g 1001 -S miarantsinjoniaina && adduser -S miarantsinjoniaina -u 1001
+
+WORKDIR /app
+
+COPY package.json bun.lockb* ./
+
+RUN bun install --frozen-lockfile --production
+
+COPY . .
+
+RUN chown -R miarantsinjoniaina:miarantsinjoniaina /app
+
+USER miarantsinjoniaina
+
+EXPOSE 3000
+
+ENV NODE_ENV=production
+
+CMD ["bun", "run", "src/app.js"]

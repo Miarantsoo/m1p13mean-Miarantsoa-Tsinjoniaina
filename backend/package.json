@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "module": "index.js",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "socket.io": "^4.8.3"
+  }
+}
