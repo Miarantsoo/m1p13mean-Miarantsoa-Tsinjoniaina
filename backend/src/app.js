@@ -6,6 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { fileURLToPath } from "url";
 import cors from "cors";
+import userRoutes from "./admin/user/user.routes.js";
 
 const currentFilePath = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFilePath);
@@ -50,7 +51,6 @@ app.use(cookieParser(cookieOptions));
 // app.use(errorHandler);
 
 // Routes
-import userRoutes from "./admin/user/user.routes.js";
 app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {

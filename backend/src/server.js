@@ -2,9 +2,7 @@ import http from "http";
 import app from "@/app.js";
 import {connectDB, gracefulShutdown} from "@/database.js";
 
-// const PORT = Number(process.env.PORT);
-const PORT = 3000;
-
+const PORT = Number(process.env.PORT);
 
 const startServer = async () => {
     try {
