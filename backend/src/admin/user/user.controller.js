@@ -1,20 +1,23 @@
-import { getAllUsers, createUser } from "./user.service.js";
+import User from "./user.model.js";
 
 export const getUsers = async (req, res) => {
-    try {
-        const users = await getAllUsers();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const users = await User.find();
+    res.json(users);
 };
 
-export const addUser = async (req, res) => {
+export const addUsers = async (req, res) => {
     try {
-        const savedUser = await createUser({
+        // const user = new User({
+        //     name: req.body.name,
+        //     email: req.body.email
+        // });
+
+        const user = new User({
             name: "John Doe",
-            email: `test${Date.now()}@gmail.com`
+            email: "a@gmail.com"
         });
+
+        const savedUser = await user.save();
 
         res.status(201).json({
             message: "User created successfully",
@@ -26,4 +29,4 @@ export const addUser = async (req, res) => {
             error: error.message
         });
     }
-};
+}
