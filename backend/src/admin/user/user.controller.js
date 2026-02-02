@@ -1,23 +1,28 @@
 import User from "./user.model.js";
+import { getAllUsers, createUser } from "./user.service.js";
+import { uploadToImgBB } from "@/utils/imgbb.js";
 
 export const getUsers = async (req, res) => {
-    const users = await User.find();
-    res.json(users);
+    try {
+        const users = await getAllUsers();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-export const addUsers = async (req, res) => {
+export const addUser = async (req, res) => {
     try {
-        // const user = new User({
-        //     name: req.body.name,
-        //     email: req.body.email
-        // });
+        const savedUser = await createUser(req.body);
 
-        const user = new User({
-            name: "John Doe",
-            email: "a@gmail.com"
-        });
+        const file = req.file;
 
-        const savedUser = await user.save();
+        console.log("BODY:", req.body);
+        console.log("FILE:", file);
+
+        const imagePath = file.path;
+        const imageUrl = await uploadToImgBB(imagePath);
+        console.log("IMG URL:", imageUrl);
 
         res.status(201).json({
             message: "User created successfully",
