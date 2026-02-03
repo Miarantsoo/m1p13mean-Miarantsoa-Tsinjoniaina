@@ -6,10 +6,13 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import userRoutes from "./admin/user/user.routes.js";
 
 const currentFilePath = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFilePath);
+
+// Routes
+import userRoutes from "./admin/user/user.routes.js";
+import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
 
 dotenv.config({
     path: path.join(currentDir, '..', '..', '.env')
@@ -50,11 +53,13 @@ app.use(cookieParser(cookieOptions));
 // app.use(notFound);
 // app.use(errorHandler);
 
-// Routes
-app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is running");
 });
+
+// Routes
+app.use("/api/users", userRoutes);
+app.use("/api/shop-requests", shopRequestRoutes);
 
 export default app;
