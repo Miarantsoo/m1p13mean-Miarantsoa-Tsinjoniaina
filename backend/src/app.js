@@ -13,6 +13,7 @@ const currentDir = path.dirname(currentFilePath);
 // Routes
 import userRoutes from "./admin/user/user.routes.js";
 import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
+import planningRoutes from "./admin/planning/planning.routes.js";
 
 dotenv.config({
     path: path.join(currentDir, '..', '..', '.env')
@@ -61,5 +62,6 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/shop-requests", shopRequestRoutes);
+app.use("/api/planning", planningRoutes);
 
 export default app;
