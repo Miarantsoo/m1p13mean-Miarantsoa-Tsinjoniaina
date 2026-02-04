@@ -14,4 +14,9 @@ export class PlanningService {
   getPlannings(): Observable<Planning[]> {
     return this.http.get<Planning[]>(this.API_URL);
   }
+
+  create(data: any) {
+    return this.http.post(this.API_URL, data);
+  }
+
 }

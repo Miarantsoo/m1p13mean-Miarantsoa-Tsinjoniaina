@@ -6,17 +6,25 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {PlanningComponent} from '../admin/planning/planning.component';
+import {ShopRequestComponent} from '../admin/shop-request/shop-request.component';
+import {FormsModule} from '@angular/forms';
+import {ShopRequestListComponent} from '../admin/shop-request/shop-request-list.component';
+import {PlanningAddComponent} from '../admin/planning/planning-add.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlanningComponent
+    PlanningComponent,
+    PlanningAddComponent,
+    ShopRequestComponent,
+    ShopRequestListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FullCalendarModule
+    FullCalendarModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [
