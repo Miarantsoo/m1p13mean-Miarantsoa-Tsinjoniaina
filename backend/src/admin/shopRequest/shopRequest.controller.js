@@ -12,9 +12,11 @@ export const getShopRequests = async (req, res) => {
 export const addShopRequest = async (req, res) => {
     try {
 
+        console.log("ATO INDRAY")
+
         const file = req.file;
-        let fileUrl = "https://ibb.co/RpFTYZ6R"; // Default image URL
-        if(file!=null){
+        let fileUrl = "https://i.ibb.co/BVp2cd60/default-image.png"; // Default image URL
+        if(file){
             const imagePath = file.path;
             fileUrl = await uploadToImgBB(imagePath);
         }

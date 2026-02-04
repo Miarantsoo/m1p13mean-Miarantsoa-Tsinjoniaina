@@ -1,0 +1,43 @@
+<div class="form-container">
+
+  <h2>Ajouter un planning</h2>
+
+  <form (ngSubmit)="submit()">
+
+    <select [(ngModel)]="shop_request" name="shop_request" required>
+      <option value="">Sélectionner une demande</option>
+      <option *ngFor="let req of shopRequests" [value]="req._id">
+        {{ req.name }} – {{ req.email }}
+      </option>
+    </select>
+
+    <input
+      type="date"
+      [(ngModel)]="date"
+      name="date"
+      required
+    />
+
+    <input
+      type="time"
+      [(ngModel)]="time"
+      name="time"
+      required
+    />
+
+    <input
+      type="number"
+      [(ngModel)]="duration"
+      name="duration"
+      min="15"
+      step="15"
+      placeholder="Durée"
+    />
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+    </button>
+
+  </form>
+
+</div>
