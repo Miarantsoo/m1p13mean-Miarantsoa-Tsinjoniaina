@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { ShopRequestService } from './shop-request.service';
+import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
 
 @Component({
   selector: 'app-shop-request',
+  standalone: false,
   templateUrl: './shop-request.component.html',
   styleUrls: ['./shop-request.component.scss']
 })

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PlanningService } from './planning.service';
-import { ShopRequestService } from '../shop-request/shop-request.service';
+import {PlanningService} from '@/modules/admin/planning/services/planning.service';
+import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
 
 @Component({
   selector: 'app-planning-add',
+  standalone: false,
   templateUrl: './planning-add.component.html',
   styleUrls: ['./planning-add.component.scss']
 })

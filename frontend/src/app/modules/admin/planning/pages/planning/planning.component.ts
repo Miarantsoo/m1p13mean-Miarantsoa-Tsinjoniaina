@@ -3,10 +3,11 @@ import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { PlanningService } from './planning.service';
+import {PlanningService} from '@/modules/admin/planning/services/planning.service';
 
 @Component({
   selector: 'app-planning',
+  standalone: false,
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.scss']
 })

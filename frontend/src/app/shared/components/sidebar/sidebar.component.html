@@ -1,0 +1,150 @@
+<z-layout class="overflow-hidden rounded-md border h-screen">
+  <z-sidebar
+    [zWidth]="250"
+    [zCollapsible]="true"
+    [zCollapsed]="sidebarCollapsed()"
+    [zCollapsedWidth]="70"
+    (zCollapsedChange)="onCollapsedChange($event)"
+    class="p-0!"
+  >
+    <nav [class]="'flex h-full flex-col overflow-hidden ' + (sidebarCollapsed() ? 'gap-1 p-1 pt-4' : 'gap-4 p-4')">
+      <z-sidebar-group>
+        @if (!sidebarCollapsed()) {
+          <z-sidebar-group-label>Main</z-sidebar-group-label>
+        }
+        @for (item of mainMenuItems; track item.label) {
+          <button
+            type="button"
+            z-button
+            zType="ghost"
+            [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
+            [zTooltip]="sidebarCollapsed() ? item.label : ''"
+            zPosition="right"
+          >
+            <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
+            @if (!sidebarCollapsed()) {
+              <span>{{ item.label }}</span>
+            }
+          </button>
+        }
+      </z-sidebar-group>
+
+      <z-sidebar-group>
+        @if (!sidebarCollapsed()) {
+          <z-sidebar-group-label>Workspace</z-sidebar-group-label>
+        }
+        @for (item of workspaceMenuItems; track item.label) {
+          @if (item.submenu) {
+            <button
+              type="button"
+              z-button
+              zType="ghost"
+              z-menu
+              [zMenuTriggerFor]="submenu"
+              zPlacement="rightTop"
+              [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
+              [zTooltip]="sidebarCollapsed() ? item.label : null"
+              zPosition="right"
+            >
+              <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
+              @if (!sidebarCollapsed()) {
+                <span class="flex-1 text-left">{{ item.label }}</span>
+                <z-icon zType="chevron-right" />
+              }
+            </button>
+
+            <ng-template #submenu>
+              <div z-menu-content class="w-48">
+                @for (subitem of item.submenu; track subitem.label) {
+                  <button type="button" z-menu-item>{{ subitem.label }}</button>
+                }
+              </div>
+            </ng-template>
+          } @else {
+            <button
+              type="button"
+              z-button
+              zType="ghost"
+              [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
+              [zTooltip]="sidebarCollapsed() ? item.label : ''"
+              zPosition="right"
+            >
+              <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
+              @if (!sidebarCollapsed()) {
+                <span>{{ item.label }}</span>
+              }
+            </button>
+          }
+        }
+      </z-sidebar-group>
+
+      <div class="mt-auto">
+        <div
+          z-menu
+          [zMenuTriggerFor]="userMenu"
+          zPlacement="rightBottom"
+          [class]="
+                'hover:bg-accent flex cursor-pointer items-center justify-center gap-2 rounded-md ' +
+                (sidebarCollapsed() ? 'm-2 p-0' : 'p-2')
+              "
+        >
+          <z-avatar zSrc="https://zardui.com/images/avatar/imgs/avatar_image.jpg" zAlt="Zard UI" />
+
+          @if (!sidebarCollapsed()) {
+            <div>
+              <span class="font-medium">zardui</span>
+              <div class="text-xs">test&#64;zardui.com</div>
+            </div>
+
+            <z-icon zType="chevrons-up-down" class="ml-auto" />
+          }
+        </div>
+
+        <ng-template #userMenu>
+          <div z-menu-content class="w-48">
+            <button type="button" z-menu-item>
+              <z-icon zType="user" class="mr-2" />
+              Profile
+            </button>
+            <button type="button" z-menu-item>
+              <z-icon zType="settings" class="mr-2" />
+              Settings
+            </button>
+            <z-divider zSpacing="sm" />
+            <button type="button" z-menu-item>
+              <z-icon zType="log-out" class="mr-2" />
+              Logout
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+    </nav>
+  </z-sidebar>
+
+  <z-layout>
+    <z-content class="min-h-50">
+      <div class="flex items-center">
+        <button type="button" z-button zType="ghost" zSize="sm" class="-ml-2" (click)="toggleSidebar()">
+          <z-icon zType="panel-left" />
+        </button>
+
+        <z-divider zOrientation="vertical" class="ml-2 h-4" />
+
+        <z-breadcrumb zWrap="wrap" zAlign="start">
+          <z-breadcrumb-item [routerLink]="['/docs/components/layout']">Home</z-breadcrumb-item>
+          <z-breadcrumb-item [routerLink]="['/']">
+            <span aria-current="page">Components</span>
+          </z-breadcrumb-item>
+        </z-breadcrumb>
+      </div>
+
+      <div class="space-y-4 py-4">
+        <router-outlet></router-outlet>
+      </div>
+    </z-content>
+    <z-footer class="h-16 justify-center align-center border-t px-12 text-white">
+      <div class="border-none text-muted-foreground flex w-full items-center justify-center text-sm">© Miarantsoa - Tsinjoniaina</div>
+    </z-footer>
+  </z-layout>
+</z-layout>

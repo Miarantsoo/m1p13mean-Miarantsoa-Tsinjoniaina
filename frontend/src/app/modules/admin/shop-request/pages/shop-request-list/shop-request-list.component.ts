@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ShopRequestService } from './shop-request.service';
 import {Router} from '@angular/router';
+import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
 
 @Component({
   selector: 'app-shop-request-list',
+  standalone: false,
   templateUrl: './shop-request-list.component.html',
   styleUrls: ['./shop-request-list.component.scss']
 })
