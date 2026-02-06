@@ -4,6 +4,7 @@ import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-req
 
 @Component({
   selector: 'app-shop-request-list',
+  standalone: false,
   templateUrl: './shop-request-list.component.html',
   styleUrls: ['./shop-request-list.component.scss']
 })

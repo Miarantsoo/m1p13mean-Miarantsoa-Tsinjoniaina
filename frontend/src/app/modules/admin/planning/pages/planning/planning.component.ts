@@ -7,6 +7,7 @@ import {PlanningService} from '@/modules/admin/planning/services/planning.servic
 
 @Component({
   selector: 'app-planning',
+  standalone: false,
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.scss']
 })

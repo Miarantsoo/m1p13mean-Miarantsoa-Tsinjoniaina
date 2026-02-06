@@ -5,6 +5,7 @@ import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-req
 
 @Component({
   selector: 'app-planning-add',
+  standalone: false,
   templateUrl: './planning-add.component.html',
   styleUrls: ['./planning-add.component.scss']
 })
