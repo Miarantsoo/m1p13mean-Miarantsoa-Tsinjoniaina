@@ -6,7 +6,6 @@ import {
   booleanAttribute,
   computed,
   Directive,
-  DOCUMENT,
   effect,
   ElementRef,
   inject,
@@ -17,6 +16,7 @@ import {
   type TemplateRef,
   untracked,
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 import { ZardMenuManagerService } from './menu-manager.service';
 import { MENU_POSITIONS_MAP, type ZardMenuPlacement } from './menu-positions';

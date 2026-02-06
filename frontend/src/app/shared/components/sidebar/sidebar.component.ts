@@ -9,6 +9,7 @@ import {ZardSkeletonComponent} from '@/shared/components/skeleton';
 import {ZardTooltipImports} from '@/shared/components/tooltip';
 import {ZardDividerComponent} from '@/shared/components/divider';
 import {ZardAvatarComponent} from '@/shared/components/avatar';
+import {RouterOutlet} from '@angular/router';
 
 interface MenuItem {
   icon: ZardIcon;
@@ -28,6 +29,7 @@ interface MenuItem {
     ZardDividerComponent,
     ZardAvatarComponent,
     ZardIconComponent,
+    RouterOutlet,
   ],
   standalone: true,
   templateUrl: './sidebar.component.html'

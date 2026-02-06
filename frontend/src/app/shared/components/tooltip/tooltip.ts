@@ -62,6 +62,7 @@ const throttle = (callback: () => void, wait: number) => {
     style: 'cursor: pointer',
   },
   exportAs: 'zTooltip',
+  standalone: true
 })
 export class ZardTooltipDirective implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
@@ -267,7 +268,7 @@ export class ZardTooltipDirective implements OnInit, OnDestroy {
         viewBox="0 0 30 10"
         preserveAspectRatio="none"
       >
-        <polygon points="0,0 30,0 15,10" />
+        <polygon points="0,0 30,0 15,10"/>
       </svg>
     </span>
   `,
@@ -279,6 +280,7 @@ export class ZardTooltipDirective implements OnInit, OnDestroy {
     '[attr.data-state]': 'state()',
     role: 'tooltip',
   },
+  standalone: true
 })
 export class ZardTooltipComponent {
   protected readonly arrowClasses = computed(() =>

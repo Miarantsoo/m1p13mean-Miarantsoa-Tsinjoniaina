@@ -16,7 +16,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 @Component({
   selector: 'z-menu-label, [z-menu-label]',
   template: `
-    <ng-content />
+    <ng-content/>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -25,6 +25,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
     '[attr.data-inset]': 'inset() || null',
   },
   exportAs: 'zMenuLabel',
+  standalone: true
 })
 export class ZardMenuLabelComponent {
   readonly class = input<ClassValue>('');

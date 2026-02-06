@@ -1,5 +1,6 @@
 import { CdkContextMenuTrigger } from '@angular/cdk/menu';
-import { DestroyRef, Directive, DOCUMENT, ElementRef, inject, input, TemplateRef } from '@angular/core';
+import { DestroyRef, Directive, ElementRef, inject, input, TemplateRef } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { noopFn } from '@/shared/utils/merge-classes';
@@ -22,6 +23,7 @@ import { noopFn } from '@/shared/utils/merge-classes';
       inputs: ['cdkContextMenuTriggerFor: zContextMenuTriggerFor'],
     },
   ],
+  standalone: true
 })
 export class ZardContextMenuDirective {
   protected readonly cdkTrigger = inject(CdkContextMenuTrigger, { host: true });

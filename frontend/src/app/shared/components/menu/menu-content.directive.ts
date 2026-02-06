@@ -15,6 +15,7 @@ import { menuContentVariants } from './menu.variants';
     tabindex: '0',
   },
   hostDirectives: [CdkMenu, CdkTrapFocus],
+  standalone: true
 })
 export class ZardMenuContentDirective implements OnInit {
   private cdkTrapFocus = inject(CdkTrapFocus);

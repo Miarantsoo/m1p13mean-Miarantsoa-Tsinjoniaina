@@ -28,7 +28,7 @@ import { mergeClasses, transform } from '@/shared/utils/merge-classes';
   template: `
     <aside [class]="classes()" [style.width.px]="currentWidth()" [attr.data-collapsed]="zCollapsed()">
       <div class="flex-1 overflow-auto">
-        <ng-content />
+        <ng-content/>
       </div>
 
       @if (zCollapsible() && !zTrigger()) {
@@ -41,18 +41,19 @@ import { mergeClasses, transform } from '@/shared/utils/merge-classes';
           [attr.aria-label]="zCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
           [attr.aria-expanded]="!zCollapsed()"
         >
-          <z-icon [zType]="chevronIcon()" />
+          <z-icon [zType]="chevronIcon()"/>
         </div>
       }
 
       @if (zCollapsible() && zTrigger()) {
-        <ng-container *zStringTemplateOutlet="zTrigger()" />
+        <ng-container *zStringTemplateOutlet="zTrigger()"/>
       }
     </aside>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'zSidebar',
+  standalone: true
 })
 export class SidebarComponent {
   readonly zWidth = input<string | number>(200);
@@ -108,12 +109,13 @@ export class SidebarComponent {
   selector: 'z-sidebar-group',
   template: `
     <div [class]="classes()">
-      <ng-content />
+      <ng-content/>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'zSidebarGroup',
+  standalone: true
 })
 export class SidebarGroupComponent {
   readonly class = input<ClassValue>('');
@@ -125,12 +127,13 @@ export class SidebarGroupComponent {
   selector: 'z-sidebar-group-label',
   template: `
     <div [class]="classes()">
-      <ng-content />
+      <ng-content/>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'zSidebarGroupLabel',
+  standalone: true
 })
 export class SidebarGroupLabelComponent {
   readonly class = input<ClassValue>('');

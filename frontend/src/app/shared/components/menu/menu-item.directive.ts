@@ -10,6 +10,7 @@ import { menuItemVariants, type ZardMenuItemTypeVariants } from './menu.variants
 
 @Directive({
   selector: 'button[z-menu-item], [z-menu-item]',
+  standalone: true,
   host: {
     '[class]': 'classes()',
     '[attr.data-orientation]': "'horizontal'",

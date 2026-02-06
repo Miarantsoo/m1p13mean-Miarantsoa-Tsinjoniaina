@@ -11,6 +11,7 @@ class ZardIdInternalService {
 @Directive({
   selector: '[zardId]',
   exportAs: 'zardId',
+  standalone: true
 })
 export class ZardIdDirective {
   private idService = inject(ZardIdInternalService);

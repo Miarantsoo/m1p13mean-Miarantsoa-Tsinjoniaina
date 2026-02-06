@@ -9,12 +9,13 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
   selector: 'z-footer',
   template: `
     <footer [class]="classes()" [style.height.px]="zHeight()">
-      <ng-content />
+      <ng-content/>
     </footer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'zFooter',
+  standalone: true
 })
 export class FooterComponent {
   readonly class = input<ClassValue>('');

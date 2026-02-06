@@ -8,7 +8,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 @Component({
   selector: 'z-menu-shortcut, [z-menu-shortcut]',
   template: `
-    <ng-content />
+    <ng-content/>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -16,6 +16,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
     '[class]': 'classes()',
   },
   exportAs: 'zMenuShortcut',
+  standalone: true
 })
 export class ZardMenuShortcutComponent {
   readonly class = input<ClassValue>('');

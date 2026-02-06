@@ -9,12 +9,13 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
   selector: 'z-header',
   template: `
     <header [class]="classes()" [style.height.px]="zHeight()">
-      <ng-content />
+      <ng-content/>
     </header>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'zHeader',
+  standalone: true
 })
 export class HeaderComponent {
   readonly class = input<ClassValue>('');
