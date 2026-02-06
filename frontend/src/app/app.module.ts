@@ -24,8 +24,7 @@ import {LayoutComponent} from '@/shared/components/layout';
     PlanningComponent,
     PlanningAddComponent,
     ShopRequestComponent,
-    ShopRequestListComponent,
-    SidebarComponent
+    ShopRequestListComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +33,7 @@ import {LayoutComponent} from '@/shared/components/layout';
     FullCalendarModule,
     FormsModule,
     ZardDividerComponent,
+    SidebarComponent,
   ],
   providers: [],
   bootstrap: [
