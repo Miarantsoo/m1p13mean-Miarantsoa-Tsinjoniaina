@@ -1,4 +1,4 @@
-<z-layout class="overflow-hidden rounded-md border">
+<z-layout class="overflow-hidden rounded-md border h-screen">
   <z-sidebar
     [zWidth]="250"
     [zCollapsible]="true"
@@ -118,27 +118,33 @@
           </div>
         </ng-template>
       </div>
+
     </nav>
   </z-sidebar>
 
-  <z-content class="min-h-50">
-    <div class="flex items-center">
-      <button type="button" z-button zType="ghost" zSize="sm" class="-ml-2" (click)="toggleSidebar()">
-        <z-icon zType="panel-left" />
-      </button>
+  <z-layout>
+    <z-content class="min-h-50">
+      <div class="flex items-center">
+        <button type="button" z-button zType="ghost" zSize="sm" class="-ml-2" (click)="toggleSidebar()">
+          <z-icon zType="panel-left" />
+        </button>
 
-      <z-divider zOrientation="vertical" class="ml-2 h-4" />
+        <z-divider zOrientation="vertical" class="ml-2 h-4" />
 
-      <z-breadcrumb zWrap="wrap" zAlign="start">
-        <z-breadcrumb-item [routerLink]="['/docs/components/layout']">Home</z-breadcrumb-item>
-        <z-breadcrumb-item [routerLink]="['/']">
-          <span aria-current="page">Components</span>
-        </z-breadcrumb-item>
-      </z-breadcrumb>
-    </div>
+        <z-breadcrumb zWrap="wrap" zAlign="start">
+          <z-breadcrumb-item [routerLink]="['/docs/components/layout']">Home</z-breadcrumb-item>
+          <z-breadcrumb-item [routerLink]="['/']">
+            <span aria-current="page">Components</span>
+          </z-breadcrumb-item>
+        </z-breadcrumb>
+      </div>
 
-    <div class="space-y-4 py-4">
-      <router-outlet></router-outlet>
-    </div>
-  </z-content>
+      <div class="space-y-4 py-4">
+        <router-outlet></router-outlet>
+      </div>
+    </z-content>
+    <z-footer class="h-16 justify-center align-center border-t px-12 text-white">
+      <div class="border-none text-muted-foreground flex w-full items-center justify-center text-sm">© Miarantsoa - Tsinjoniaina</div>
+    </z-footer>
+  </z-layout>
 </z-layout>

@@ -24,7 +24,6 @@ interface MenuItem {
     ZardButtonComponent,
     ZardBreadcrumbImports,
     ZardMenuImports,
-    ZardSkeletonComponent,
     ZardTooltipImports,
     ZardDividerComponent,
     ZardAvatarComponent,
