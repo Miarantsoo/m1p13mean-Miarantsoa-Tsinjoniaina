@@ -1,0 +1,32 @@
+<div class="container">
+
+  <h2>Demandes de boutique</h2>
+
+  <p *ngIf="loading">Chargement...</p>
+
+  <div class="card" *ngFor="let req of shopRequests">
+
+    <img [src]="req.image_link" alt="shop image" />
+
+    <div class="content">
+      <h3>{{ req.name }}</h3>
+      <p class="email">{{ req.email }}</p>
+
+      <p class="letter">
+        {{ req.covering_letter | slice:0:100 }}...
+      </p>
+
+      <div class="footer">
+        <small>
+          {{ req.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </small>
+
+        <button (click)="goToPlanning(req._id)">
+          Ajouter planning
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
