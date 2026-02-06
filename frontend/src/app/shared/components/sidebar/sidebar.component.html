@@ -35,31 +35,34 @@
         }
         @for (item of workspaceMenuItems; track item.label) {
           @if (item.submenu) {
-            <button
-              type="button"
-              z-button
-              zType="ghost"
-              z-menu
-              [zMenuTriggerFor]="submenu"
-              zPlacement="rightTop"
-              [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
-              [zTooltip]="sidebarCollapsed() ? item.label : null"
-              zPosition="right"
-            >
-              <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
-              @if (!sidebarCollapsed()) {
-                <span class="flex-1 text-left">{{ item.label }}</span>
-                <z-icon zType="chevron-right" />
-              }
-            </button>
-
-            <ng-template #submenu>
-              <div z-menu-content class="w-48">
-                @for (subitem of item.submenu; track subitem.label) {
-                  <button type="button" z-menu-item>{{ subitem.label }}</button>
+            <!-- Wrap in a container to maintain scope -->
+            <ng-container>
+              <button
+                type="button"
+                z-button
+                zType="ghost"
+                z-menu
+                [zMenuTriggerFor]="itemSubmenu"
+                zPlacement="rightTop"
+                [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
+                [zTooltip]="sidebarCollapsed() ? item.label : null"
+                zPosition="right"
+              >
+                <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
+                @if (!sidebarCollapsed()) {
+                  <span class="flex-1 text-left">{{ item.label }}</span>
+                  <z-icon zType="chevron-right" />
                 }
-              </div>
-            </ng-template>
+              </button>
+
+              <ng-template #itemSubmenu>
+                <div z-menu-content class="w-48">
+                  @for (subitem of item.submenu; track subitem.label) {
+                    <button type="button" z-menu-item>{{ subitem.label }}</button>
+                  }
+                </div>
+              </ng-template>
+            </ng-container>
           } @else {
             <button
               type="button"
