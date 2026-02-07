@@ -11,6 +11,7 @@ const currentFilePath = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFilePath);
 
 // Routes
+import authRoutes from "./auth/auth.routes.js";
 import userRoutes from "./admin/user/user.routes.js";
 import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
 import planningRoutes from "./admin/planning/planning.routes.js";
@@ -60,6 +61,7 @@ app.get("/", (req, res) => {
 });
 
 // Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/shop-requests", shopRequestRoutes);
 app.use("/api/planning", planningRoutes);

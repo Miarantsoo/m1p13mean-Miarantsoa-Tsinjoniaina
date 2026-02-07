@@ -1,20 +1,18 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {HttpService} from '@/core/services/http/http.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ShopRequestService {
-  private apiUrl = 'http://localhost:3000/api/shop-requests';
-
-  constructor(private http: HttpClient) {}
+export class ShopRequestService extends HttpService {
+  protected override endpoint = "shop-requests";
 
   create(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData);
+    return this.doPost<string>('', formData);
   }
 
   getAll() {
-    return this.http.get<any[]>('http://localhost:3000/api/shop-requests');
+    return this.doGet<any[]>('');
   }
 }
