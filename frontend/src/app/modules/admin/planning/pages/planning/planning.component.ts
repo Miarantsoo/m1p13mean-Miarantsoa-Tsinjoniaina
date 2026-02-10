@@ -17,12 +17,27 @@ export class PlanningComponent implements OnInit {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
     locale: 'fr',
+
+    slotMinTime: '08:00:00',
+    slotMaxTime: '17:30:00',
+
+    slotDuration: '00:30:00',
+    slotLabelInterval: '00:30',
+
+    businessHours: {
+      daysOfWeek: [1, 2, 3, 4, 5],
+      startTime: '08:00',
+      endTime: '17:00'
+    },
+
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
+
     events: [],
+
     eventTimeFormat: {
       hour: '2-digit',
       minute: '2-digit',
