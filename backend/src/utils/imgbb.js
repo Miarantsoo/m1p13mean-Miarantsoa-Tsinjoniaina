@@ -4,7 +4,7 @@ import FormData from "form-data";
 
 export const uploadToImgBB = async (filePath) => {
     try {
-        const apikey = ""; // Clé API ImgBB
+        const apikey = process.env.IMGBB_API_KEY;
 
         if (!fs.existsSync(filePath)) {
             throw new Error("File not found");
