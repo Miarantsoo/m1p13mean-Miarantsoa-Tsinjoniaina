@@ -14,7 +14,6 @@ export const login = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        success: false,
         message: 'Email and password required.'
       });
     }
@@ -23,25 +22,30 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        success: false,
         message: 'Invalid credentials.'
       });
     }
 
-    const bcrypt = await import('bcrypt');
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: 'Account disabled. Contact administrator.'
+      });
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
 
     if (!isPasswordValid) {
       return res.status(401).json({
-        success: false,
         message: 'Invalid credentials.'
       });
     }
+
+    await user.updateLastLogin();
 
     const accessToken = await generateAccessToken({
       userId: user._id.toString(),
       email: user.email,
-      role: user.role || 'user'
+      role: user.role
     });
 
     const refreshToken = await generateRefreshToken({
@@ -51,15 +55,9 @@ export const login = async (req, res) => {
     setRefreshTokenCookie(res, refreshToken);
 
     res.json({
-      success: true,
       message: 'Login successful',
       accessToken,
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role || 'user',
-        name: user.name
-      }
+      user: user.toPublicJSON()
     });
 
   } catch (error) {
@@ -74,35 +72,37 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const data = req.body;
+    console.log(data)
 
-    // Validation des champs
-    if (!email || !password || !name) {
+    if (!data.email || !data.password || !data.first_name) {
       return res.status(400).json({
-        success: false,
-        message: 'Tous les champs sont requis.'
+        message: 'All fields are required.'
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    if (data.password.length < 8) {
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters long.'
+      });
+    }
+
+    const existingUser = await User.findOne({ email: data.email });
 
     if (existingUser) {
       return res.status(409).json({
-        success: false,
         message: 'Email already exists.'
       });
     }
 
-    const bcrypt = await import('bcrypt');
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({
-      email,
-      password: hashedPassword,
-      name,
-      role: 'user' // rôle par défaut
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+      provider: 'local'
     });
-
 
     const accessToken = await generateAccessToken({
       userId: user._id.toString(),
@@ -117,21 +117,14 @@ export const register = async (req, res) => {
     setRefreshTokenCookie(res, refreshToken);
 
     res.status(201).json({
-      success: true,
       message: 'Registration successful',
       accessToken,
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        name: user.name
-      }
+      user: user.toPublicJSON()
     });
 
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({
-      success: false,
       message: 'Error during registration',
       error: error.message
     });
@@ -145,7 +138,6 @@ export const refresh = async (req, res) => {
 
     if (!refreshToken) {
       return res.status(401).json({
-        success: false,
         message: 'Refresh token missing.'
       });
     }
@@ -157,7 +149,6 @@ export const refresh = async (req, res) => {
     if (!user) {
       clearRefreshTokenCookie(res);
       return res.status(401).json({
-        success: false,
         message: 'User not found.'
       });
     }
@@ -175,7 +166,6 @@ export const refresh = async (req, res) => {
     setRefreshTokenCookie(res, newRefreshToken);
 
     res.json({
-      success: true,
       accessToken: newAccessToken
     });
 
@@ -183,7 +173,6 @@ export const refresh = async (req, res) => {
     console.error('Refresh error:', error);
     clearRefreshTokenCookie(res);
     res.status(401).json({
-      success: false,
       message: 'Invalid refresh token or expired.',
       error: error.message
     });
@@ -195,14 +184,12 @@ export const logout = async (req, res) => {
     clearRefreshTokenCookie(res);
 
     res.json({
-      success: true,
       message: 'Logout successful'
     });
 
   } catch (error) {
     console.error('Logout error:', error);
     res.status(500).json({
-      success: false,
       message: 'Error during logout',
       error: error.message
     });
@@ -215,20 +202,17 @@ export const getProfile = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        success: false,
         message: 'User not found.'
       });
     }
 
     res.json({
-      success: true,
       user
     });
 
   } catch (error) {
     console.error('GetProfile error:', error);
     res.status(500).json({
-      success: false,
       message: 'Error fetching profile',
       error: error.message
     });
