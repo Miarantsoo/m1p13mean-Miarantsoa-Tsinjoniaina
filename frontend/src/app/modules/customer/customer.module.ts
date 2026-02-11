@@ -14,13 +14,15 @@ import {
 import {ZardInputDirective} from '@/shared/components/input';
 import {ZardCardComponent} from '@/shared/components/card';
 import {ZardAlertComponent} from '@/shared/components/alert';
+import { AuthCallbackComponent } from './auth/pages/auth-callback/auth-callback.component';
 
 
 
 @NgModule({
   declarations: [
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    AuthCallbackComponent
   ],
   imports: [
     CommonModule,

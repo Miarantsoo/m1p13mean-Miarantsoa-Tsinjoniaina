@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     },
     last_name: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     email: {
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['admin', 'shop', 'customer'],
-        default: 'user'
+        default: 'customer'
     },
     avatar: {
         type: String,
@@ -76,9 +76,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-userSchema.index({ email: 1 });
-userSchema.index({ googleId: 1 });
-
 userSchema.methods.comparePassword = async function(candidatePassword) {
     try {
         return await bcrypt.compare(candidatePassword, this.password);
@@ -101,22 +98,12 @@ userSchema.methods.toPublicJSON = function() {
     };
 };
 
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
+userSchema.pre('save', async function() {
+    if (!this.isModified('password')) return;
+    if (!this.password) return;
 
-    if (!this.password) {
-        return next();
-    }
-
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.updateLastLogin = async function() {

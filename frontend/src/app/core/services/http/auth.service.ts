@@ -40,6 +40,10 @@ export class AuthService {
       );
   }
 
+  loginGoogle(): void {
+    window.location.href = `${this.API_URL}/auth/google`;
+  }
+
   register(userData: RegisterUserRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, userData)
       .pipe(

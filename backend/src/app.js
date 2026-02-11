@@ -1,29 +1,22 @@
 import express from "express";
-import path from "path";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
-import { fileURLToPath } from "url";
 import cors from "cors";
-
-const currentFilePath = fileURLToPath(import.meta.url);
-const currentDir = path.dirname(currentFilePath);
 
 // Routes
 import authRoutes from "./auth/auth.routes.js";
 import userRoutes from "./admin/user/user.routes.js";
 import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
 import planningRoutes from "./admin/planning/planning.routes.js";
+import {configureGoogleOAuth} from "@/auth/google.oauth.js";
+import passport from "passport";
 
-dotenv.config({
-    path: path.join(currentDir, '..', '..', '.env')
-});
 
-const FRONTEND_BASE_URL = String(process.env.FRONTEND_BASE_URL);
+const CORS_ORIGIN = String(process.env.CORS_ORIGIN);
 
 const corsOption = {
-  origin: [FRONTEND_BASE_URL],
+  origin: [CORS_ORIGIN],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -50,6 +43,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(corsOption));
 app.use(cookieParser(cookieOptions));
+
+app.use(passport.initialize());
+
+configureGoogleOAuth();
 
 // 404 + erreurs
 // app.use(notFound);
