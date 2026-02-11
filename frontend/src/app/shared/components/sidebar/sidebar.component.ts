@@ -10,6 +10,7 @@ import {ZardTooltipImports} from '@/shared/components/tooltip';
 import {ZardDividerComponent} from '@/shared/components/divider';
 import {ZardAvatarComponent} from '@/shared/components/avatar';
 import {RouterOutlet} from '@angular/router';
+import {AuthService} from '@/core/services/http/auth.service';
 
 interface MenuItem {
   icon: ZardIcon;
@@ -35,6 +36,11 @@ interface MenuItem {
 })
 export class SidebarComponent {
   readonly sidebarCollapsed = signal(false);
+  protected authService: AuthService;
+
+  constructor(private auth: AuthService) {
+    this.authService = auth;
+  }
 
   mainMenuItems: MenuItem[] = [
     { icon: 'house', label: 'Home' },
@@ -57,5 +63,9 @@ export class SidebarComponent {
 
   onCollapsedChange(collapsed: boolean) {
     this.sidebarCollapsed.set(collapsed);
+  }
+
+  logoutUser() {
+    this.auth.logout();
   }
 }
