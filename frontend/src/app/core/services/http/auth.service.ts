@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import {LoginUserRequest, RegisterUserRequest} from '@/modules/customer/auth/models/user.model';
+import {environment} from '@environment/environment.development';
 
 export interface User {
   id: string;
@@ -11,7 +13,7 @@ export interface User {
 }
 
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
   user: User;
 }
 
@@ -21,6 +23,7 @@ export interface AuthResponse {
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_info';
+  private readonly API_URL = environment.apiUrl + '/api';
 
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -30,15 +33,15 @@ export class AuthService {
     private router: Router
   ) {}
 
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/api/auth/login', { email, password })
+  login(userData: LoginUserRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, userData)
       .pipe(
         tap(response => this.handleAuthSuccess(response))
       );
   }
 
-  register(userData: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/api/auth/register', userData)
+  register(userData: RegisterUserRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, userData)
       .pipe(
         tap(response => this.handleAuthSuccess(response))
       );
@@ -74,7 +77,7 @@ export class AuthService {
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
-    localStorage.setItem(this.TOKEN_KEY, response.token);
+    localStorage.setItem(this.TOKEN_KEY, response.accessToken);
     localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
     this.currentUserSubject.next(response.user);
   }
