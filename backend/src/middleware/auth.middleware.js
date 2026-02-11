@@ -8,8 +8,10 @@ const REFRESH_TOKEN_SECRET = new TextEncoder().encode(
 );
 
 
-const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRE_MINUTES || '15' + "m";
-const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRE_DAYS || '7' + 'd';
+const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRE_MINUTES + "m" || '15m';
+const REFRESH_TOKEN_EXPIRE_DAYS = Number(process.env.REFRESH_TOKEN_EXPIRE_DAYS) || 7;
+const maxAgeRefresh = REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 * 1000;
+const REFRESH_TOKEN_EXPIRATION = REFRESH_TOKEN_EXPIRE_DAYS + 'd';
 
 
 export const generateAccessToken = async (payload) => {
@@ -63,9 +65,7 @@ export const authenticate = async (req, res, next) => {
 
     const token = authHeader.substring(7);
 
-    const payload = await verifyAccessToken(token);
-
-    req.user = payload;
+    req.user = await verifyAccessToken(token);
 
     next();
   } catch (error) {
@@ -107,7 +107,7 @@ export const setRefreshTokenCookie = (res, token) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: Number( process.env.REFRESH_TOKEN_EXPIRE_DAYS) * 24 * 60 * 60 * 1000,
+    maxAge: maxAgeRefresh,
     path: '/'
   });
 };
