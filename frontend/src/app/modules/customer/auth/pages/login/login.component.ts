@@ -54,4 +54,8 @@ export class LoginComponent {
       });
     }
   }
+
+  loginToGoogle(): void {
+    this.authService.loginGoogle();
+  }
 }

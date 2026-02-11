@@ -47,6 +47,11 @@
       <button type="submit" z-button zFull [zLoading]="isLoading" [disabled]="isLoading || registerForm.invalid">
         Se connecter
       </button>
+
+      <button type="button" z-button zFull class="bg-white text-black border shadow-sm flex items-center justify-center gap-2 py-2 hover:bg-gray-200" [zLoading]="isLoading" [disabled]="isLoading || registerForm.invalid" (click)="loginToGoogle()">
+        <img src="assets/Logo-google-icon-PNG.png" alt="Logo Google" class="h-5 w-5 object-contain" />
+        <span>Se connecter avec Google</span>
+      </button>
     </form>
 
     <p class="text-center mt-4 text-sm">
