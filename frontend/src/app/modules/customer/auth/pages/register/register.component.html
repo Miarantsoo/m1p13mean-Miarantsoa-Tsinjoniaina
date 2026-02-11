@@ -1,0 +1,121 @@
+<div class="register-container">
+  <z-card class="p-4 sm:p-6 lg:p-8">
+    <h1 class="text-2xl font-bold text-center mb-6">Créer un compte</h1>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4 sm:space-y-6">
+      <z-form-field>
+        <z-form-label [zRequired]="true">Prénom</z-form-label>
+        <z-form-control>
+          <input
+            z-input
+            type="text"
+            [zStatus]="registerForm.get('first_name')?.touched && registerForm.get('first_name')?.invalid ? 'error' : undefined"
+            formControlName="first_name"
+            placeholder="Entrez votre prénom"
+            class="w-full"
+          />
+        </z-form-control>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('first_name')?.touched && registerForm.get('first_name')?.hasError('required')">
+          Le prénom est requis
+        </z-form-message>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('first_name')?.touched && registerForm.get('first_name')?.hasError('minlength')">
+          Le prénom doit contenir au moins 2 caractères
+        </z-form-message>
+      </z-form-field>
+
+      <z-form-field>
+        <z-form-label [zRequired]="false">Nom</z-form-label>
+        <z-form-control>
+          <input
+            z-input
+            type="text"
+            [zStatus]="registerForm.get('last_name')?.touched && registerForm.get('last_name')?.invalid ? 'warning' : undefined"
+            formControlName="last_name"
+            placeholder="Entrez votre nom"
+            class="w-full"
+          />
+        </z-form-control>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('last_name')?.touched && registerForm.get('last_name')?.hasError('minlength')">
+          Le nom doit contenir au moins 2 caractères
+        </z-form-message>
+      </z-form-field>
+
+      <z-form-field>
+        <z-form-label [zRequired]="true">Email</z-form-label>
+        <z-form-control>
+          <input
+            z-input
+            type="email"
+            [zStatus]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid ? 'error' : undefined"
+            formControlName="email"
+            placeholder="name@example.com"
+            class="w-full"
+          />
+        </z-form-control>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">
+          L'email est requis
+        </z-form-message>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">
+          L'email doit être valide
+        </z-form-message>
+      </z-form-field>
+
+      <z-form-field>
+        <z-form-label [zRequired]="true">Mot de passe</z-form-label>
+        <z-form-control>
+          <input
+            z-input
+            type="password"
+            [zStatus]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid ? 'error' : undefined"
+            formControlName="password"
+            placeholder="••••••••"
+            class="w-full"
+          />
+        </z-form-control>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">
+          Le mot de passe est requis
+        </z-form-message>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('minlength')">
+          Le mot de passe doit contenir au moins 8 caractères
+        </z-form-message>
+      </z-form-field>
+
+      <z-form-field>
+        <z-form-label [zRequired]="true">Numéro de téléphone</z-form-label>
+        <z-form-control>
+          <div class="flex items-center">
+            <div class="flex items-center gap-2 px-3 py-2 border rounded-tl-md rounded-bl-md bg-muted/50 shrink-0">
+              <span class="text-sm font-medium -my-0.25">+261</span>
+            </div>
+            <input
+              z-input
+              type="tel"
+              [zStatus]="registerForm.get('phone_number')?.touched && registerForm.get('phone_number')?.invalid ? 'error' : undefined"
+              formControlName="phone_number"
+              placeholder="xx xx xxx xx"
+              class="rounded-tl-none rounded-bl-none flex-1"
+              maxlength="12"
+              (input)="formatPhoneNumber($event)"
+            />
+          </div>
+        </z-form-control>
+        <z-form-message class="text-red-400" *ngIf="registerForm.get('phone_number')?.touched && registerForm.get('phone_number')?.hasError('required')">
+          Le numéro de téléphone est requis
+        </z-form-message>
+      </z-form-field>
+
+      <z-alert *ngIf="errorMessage" zType="destructive" class="mt-4">
+        {{ errorMessage }}
+      </z-alert>
+
+      <button type="submit" z-button zFull [zLoading]="isLoading" [disabled]="isLoading || registerForm.invalid">
+        S'inscrire
+      </button>
+    </form>
+
+    <p class="text-center mt-4 text-sm">
+      Vous avez déjà un compte ?
+      <a z-button zType="link" routerLink="/auth/login" class="p-0 ml-1">Se connecter</a>
+    </p>
+  </z-card>
+</div>
