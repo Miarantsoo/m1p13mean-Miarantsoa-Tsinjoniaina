@@ -23,15 +23,10 @@ services:
     restart: unless-stopped
     ports:
       - "${BACKEND_PORT:-3000}:3000"
+    env_file:
+      - .env
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
-      PORT: 3000
-      MONGODB_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
-      JWT_SECRET: ${JWT_SECRET}
-      ALGORITHM: ${ALGORITHM:-HS256}
-      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:-15}
-      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-7}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4200}
+      MONGO_HOST: mongodb
     volumes:
       - ./backend:/app
       - /app/node_modules
