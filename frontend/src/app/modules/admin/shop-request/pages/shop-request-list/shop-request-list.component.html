@@ -1,32 +1,13 @@
-<div class="container">
-
-  <h2>Demandes de boutique</h2>
-
-  <p *ngIf="loading">Chargement...</p>
-
-  <div class="card" *ngFor="let req of shopRequests">
-
-    <img [src]="req.image_link" alt="shop image" />
-
-    <div class="content">
-      <h3>{{ req.name }}</h3>
-      <p class="email">{{ req.email }}</p>
-
-      <p class="letter">
-        {{ req.covering_letter | slice:0:100 }}...
-      </p>
-
-      <div class="footer">
-        <small>
-          {{ req.createdAt | date:'dd/MM/yyyy HH:mm' }}
-        </small>
-
-        <button (click)="goToPlanning(req._id)">
-          Ajouter planning
-        </button>
-      </div>
-    </div>
-
-  </div>
-
+<div class="h-screen w-full">
+  <z-tab-group (zTabChange)="onTabChange($event)">
+    <z-tab label="Nouvelle">
+      <app-shop-request-status-list #newTab [status]="'new'"></app-shop-request-status-list>
+    </z-tab>
+    <z-tab label="En attente">
+      <app-shop-request-status-list #pendingTab [status]="'pending'"></app-shop-request-status-list>
+    </z-tab>
+    <z-tab label="Rejetée">
+      <app-shop-request-status-list #rejectedTab [status]="'rejected'"></app-shop-request-status-list>
+    </z-tab>
+  </z-tab-group>
 </div>
