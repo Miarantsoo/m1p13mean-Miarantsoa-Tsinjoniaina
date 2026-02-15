@@ -111,6 +111,9 @@ export class HttpService {
    */
   protected buildUrl(path: string): string {
     const base = `${this.apiUrl}/${this.endpoint}`;
+    if (path.startsWith("?")) {
+      return `${base}${path}`;
+    }
     return path ? `${base}/${path}` : base;
   }
 
