@@ -1,7 +1,7 @@
 import ShopRequest from "./shopRequest.model.js";
 
-export const getAllShopRequests = async () => {
-    return await ShopRequest.find();
+export const getAllShopRequests = async (status) => {
+    return await ShopRequest.find({status});
 }
 
 export const createShopRequest = async (shopRequestData) => {
