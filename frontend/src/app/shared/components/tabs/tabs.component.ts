@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
+import {DOCUMENT, NgTemplateOutlet} from '@angular/common';
 import {
   afterNextRender,
   type AfterViewInit,
@@ -18,7 +18,6 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
-impoer { DOCUMENT } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import clsx from 'clsx';
