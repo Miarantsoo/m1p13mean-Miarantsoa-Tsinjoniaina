@@ -3,7 +3,8 @@ import {uploadToImgBB} from "@/utils/imgbb.js";
 
 export const getShopRequests = async (req, res) => {
     try {
-        const shopRequests = await getAllShopRequests();
+        const status = req.query.status;
+        const shopRequests = await getAllShopRequests(status);
         res.json(shopRequests);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -12,10 +13,8 @@ export const getShopRequests = async (req, res) => {
 export const addShopRequest = async (req, res) => {
     try {
 
-        console.log("ATO INDRAY")
-
         const file = req.file;
-        let fileUrl = "https://i.ibb.co/BVp2cd60/default-image.png"; // Default image URL
+        let fileUrl = "https://i.ibb.co/BVp2cd60/default-image.png";
         if(file){
             const imagePath = file.path;
             fileUrl = await uploadToImgBB(imagePath);

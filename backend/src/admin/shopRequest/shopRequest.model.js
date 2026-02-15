@@ -20,6 +20,15 @@ const shopRequestSchema = new mongoose.Schema(
         covering_letter: {
             type: String,
             required: true
+        },
+        status: {
+            type: String,
+            enum: ['new', 'pending', 'approved', 'rejected'],
+            default: 'new'
+        },
+        rejection_reason: {
+            type: String,
+            default: null
         }
     },
     {

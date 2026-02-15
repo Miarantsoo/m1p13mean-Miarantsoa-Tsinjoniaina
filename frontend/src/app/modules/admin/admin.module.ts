@@ -7,6 +7,10 @@ import {FullCalendarModule} from '@fullcalendar/angular';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ShopRequestComponent } from '@/modules/admin/shop-request/pages/shop-request/shop-request.component';
 import { ShopRequestListComponent } from './shop-request/pages/shop-request-list/shop-request-list.component';
+import { ShopRequestStatusListComponent } from './shop-request/components/shop-request-status-list/shop-request-status-list.component';
+import {ZardTabComponent, ZardTabGroupComponent} from '@/shared/components/tabs';
+import { ZardCardComponent } from '@/shared/components/card/card.component';
+import { ZardButtonComponent } from '@/shared/components/button/button.component';
 
 
 
@@ -15,14 +19,19 @@ import { ShopRequestListComponent } from './shop-request/pages/shop-request-list
     PlanningComponent,
     PlanningAddComponent,
     ShopRequestComponent,
-    ShopRequestListComponent
+    ShopRequestListComponent,
+    ShopRequestStatusListComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     FullCalendarModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ZardTabGroupComponent,
+    ZardTabComponent,
+    ZardCardComponent,
+    ZardButtonComponent
   ]
 })
 export class AdminModule { }
