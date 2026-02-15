@@ -12,7 +12,10 @@ export class ShopRequestService extends HttpService {
     return this.doPost<string>('', formData);
   }
 
-  getAll() {
-    return this.doGet<any[]>('');
+  getAll(status: string) {
+    const param = new URLSearchParams({
+      status: status
+    })
+    return this.doGet<any[]>(`?${param.toString()}`,);
   }
 }
