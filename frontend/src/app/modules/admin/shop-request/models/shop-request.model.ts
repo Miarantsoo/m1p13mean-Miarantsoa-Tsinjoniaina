@@ -5,3 +5,8 @@ export interface ShopRequest {
   covering_letter: string;
   image_link?: string;
 }
+
+export interface ShopRequestRejectionRequest {
+  id: string;
+  reason: string;
+}
