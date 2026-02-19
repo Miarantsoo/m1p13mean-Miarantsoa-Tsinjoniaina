@@ -173,4 +173,27 @@
   position: absolute;
   pointer-events: auto;
   box-sizing: border-box;
+  z-index: 1001;
 }
+
+.cdk-overlay-backdrop,
+.zard-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing,
+.zard-overlay-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 1;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-hide,
+.zard-overlay-backdrop.cdk-overlay-backdrop-hide {
+  opacity: 0;
+}
+
+// ── Calendrier pleine largeur ──────────────────────────────────────────────────
