@@ -197,3 +197,43 @@
 }
 
 // ── Calendrier pleine largeur ──────────────────────────────────────────────────
+.calendar-full-width {
+  z-calendar {
+    display: block;
+    width: 100%;
+
+    & > div {
+      width: 100% !important;
+    }
+
+    z-calendar-navigation > div {
+      width: 100%;
+    }
+
+    z-calendar-grid {
+      width: 100%;
+
+      & > div {
+        width: 100%;
+
+        .grid.grid-cols-7 {
+          width: 100% !important;
+          & > div { flex: 1; }
+        }
+
+        .mt-2.grid.grid-cols-7 {
+          width: 100% !important;
+          min-height: 220px;
+          align-content: start;
+          & > div { flex: 1; }
+        }
+      }
+    }
+  }
+}
+
+// ── Input time : correction du padding gauche ──────────────────────────────────
+input[type="time"][z-input] {
+  padding-left: 1rem !important;
+}
+
