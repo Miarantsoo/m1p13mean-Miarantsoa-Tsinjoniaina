@@ -1,0 +1,23 @@
+<form [formGroup]="form" class="grid gap-4">
+  <div class="grid gap-3">
+    <label
+      for="reason"
+      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+    >
+      Raison <span class="text-red-500">*</span>
+    </label>
+    <textarea
+      z-input
+      formControlName="reason"
+      rows="20"
+      class="w-full resize-none mt-2"
+    ></textarea>
+    @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+      <div class="text-sm text-red-500">
+        @if (form.get('reason')?.hasError('required')) {
+          <p>La raison est obligatoire.</p>
+        }
+      </div>
+    }
+  </div>
+</form>
