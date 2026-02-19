@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import { PlanningComponent } from '@/modules/admin/planning/pages/planning/planning.component';
 import { PlanningAddComponent } from '@/modules/admin/planning/pages/planning-add/planning-add.component';
@@ -11,8 +11,21 @@ import { ShopRequestStatusListComponent } from './shop-request/components/shop-r
 import {ZardTabComponent, ZardTabGroupComponent} from '@/shared/components/tabs';
 import { ZardCardComponent } from '@/shared/components/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
-
-
+import { ZardLoaderComponent } from '@/shared/components/loader/loader.component';
+import {
+  ZardPaginationButtonComponent,
+  ZardPaginationComponent, ZardPaginationContentComponent,
+  ZardPaginationEllipsisComponent, ZardPaginationItemComponent, ZardPaginationNextComponent,
+  ZardPaginationPreviousComponent
+} from '@/shared/components/pagination';
+import {ZardDividerComponent} from '@/shared/components/divider';
+import {ZardIconComponent} from '@/shared/components/icon';
+import { RejectShopRequestComponent } from './shop-request/components/reject-shop-request/reject-shop-request.component';
+import {ZardInputDirective} from '@/shared/components/input';
+import {ZardSelectComponent, ZardSelectItemComponent} from '@/shared/components/select';
+import {AngularTiptapEditorComponent} from '@flogeez/angular-tiptap-editor';
+import {ZardFormImports} from '@/shared/components/form';
+import {ZardCalendarComponent} from '@/shared/components/calendar';
 
 @NgModule({
   declarations: [
@@ -20,18 +33,36 @@ import { ZardButtonComponent } from '@/shared/components/button/button.component
     PlanningAddComponent,
     ShopRequestComponent,
     ShopRequestListComponent,
-    ShopRequestStatusListComponent
+    ShopRequestStatusListComponent,
+    RejectShopRequestComponent,
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    FullCalendarModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ZardTabGroupComponent,
-    ZardTabComponent,
-    ZardCardComponent,
-    ZardButtonComponent
-  ]
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        FullCalendarModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ZardTabGroupComponent,
+        ZardTabComponent,
+        ZardCardComponent,
+        ZardButtonComponent,
+        ZardLoaderComponent,
+        ZardPaginationComponent,
+        ZardPaginationPreviousComponent,
+        ZardPaginationEllipsisComponent,
+        ZardPaginationNextComponent,
+        ZardPaginationButtonComponent,
+        ZardPaginationContentComponent,
+        ZardPaginationItemComponent,
+        ZardDividerComponent,
+        ZardIconComponent,
+        ZardInputDirective,
+        ZardSelectComponent,
+        ZardSelectItemComponent,
+        AngularTiptapEditorComponent,
+        ...ZardFormImports,
+        ZardCalendarComponent
+    ],
+  providers: [DatePipe]
 })
 export class AdminModule { }
