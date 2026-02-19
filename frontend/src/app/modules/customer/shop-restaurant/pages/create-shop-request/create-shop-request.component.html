@@ -1,0 +1,96 @@
+<div class="p-4 w-4/5">
+  <z-card>
+    <form [formGroup]="shopRequestForm" (ngSubmit)="submit()" class="space-y-6">
+      <div class="flex gap-6 items-start">
+        <div class="flex-shrink-0">
+          <z-form-label [zRequired]="true">Photo</z-form-label>
+          <label class="cursor-pointer block">
+            <div [class]="'w-40 h-40 rounded-full overflow-hidden border flex items-center justify-center bg-gray-100 transition-colors ' +
+                         (submitted && f['image'].errors ? 'border-red-500 hover:border-red-600' : 'border-gray-300 hover:border-blue-400')">
+              <img
+                *ngIf="imageFile"
+                [src]="imageFile | fileToUrl"
+                alt="Aperçu"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!imageFile" class="flex flex-col items-center justify-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-base text-center">Votre logo</span>
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              class="hidden"
+            />
+          </label>
+          <div *ngIf="submitted && f['image'].errors" class="mt-1">
+            <p class="text-xs text-red-600">La photo est obligatoire</p>
+          </div>
+        </div>
+
+        <div class="flex-1 flex flex-col gap-4">
+          <div>
+            <z-form-label [zRequired]="true">Nom</z-form-label>
+            <input
+              z-input
+              type="text"
+              formControlName="name"
+              [class.border-red-500]="submitted && f['name'].errors"
+              class="w-full mt-2"
+            />
+            <div *ngIf="submitted && f['name'].errors" class="mt-1">
+              <p *ngIf="f['name'].errors['required']" class="text-xs text-red-600">Le nom est obligatoire</p>
+              <p *ngIf="f['name'].errors['minlength']" class="text-xs text-red-600">Le nom doit contenir au moins 2 caractères</p>
+            </div>
+          </div>
+
+          <div>
+            <z-form-label [zRequired]="true">Email</z-form-label>
+            <input
+              z-input
+              type="email"
+              formControlName="email"
+              [class.border-red-500]="submitted && f['email'].errors"
+              class="w-full mt-2"
+            />
+            <div *ngIf="submitted && f['email'].errors" class="mt-1">
+              <p *ngIf="f['email'].errors['required']" class="text-xs text-red-600">L'email est obligatoire</p>
+              <p *ngIf="f['email'].errors['email']" class="text-xs text-red-600">L'email n'est pas valide</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <z-form-label [zRequired]="true">Lettre de motivation *</z-form-label>
+        <textarea
+          z-input
+          formControlName="coveringLetter"
+          [class.border-red-500]="submitted && f['coveringLetter'].errors"
+          rows="20"
+          class="w-full resize-none mt-2"
+        ></textarea>
+        <div *ngIf="submitted && f['coveringLetter'].errors" class="mt-1">
+          <p *ngIf="f['coveringLetter'].errors['required']" class="text-xs text-red-600">La lettre de motivation est obligatoire</p>
+          <p *ngIf="f['coveringLetter'].errors['minlength']" class="text-xs text-red-600">La lettre doit contenir au moins 10 caractères</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          z-button
+          type="submit"
+          [zDisabled]="loading"
+          [zLoading]="loading"
+        >
+          {{ loading ? 'Envoi...' : 'Envoyer' }}
+        </button>
+      </div>
+    </form>
+  </z-card>
+</div>
