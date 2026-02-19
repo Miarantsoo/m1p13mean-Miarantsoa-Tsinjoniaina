@@ -1,7 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import {PlanningService} from '@/modules/admin/planning/services/planning.service';
-import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
+import {Component, inject, OnInit, Optional} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PlanningService } from '@/modules/admin/planning/services/planning.service';
+import { Z_MODAL_DATA } from '@/shared/components/dialog';
+import { map, catchError } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+
+export interface iPlanningDialogData {
+  id: string;
+  date: string;
+  time: string;
+  duration: string;
+}
 
 @Component({
   selector: 'app-planning-add',
@@ -10,55 +19,52 @@ import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-req
   styleUrls: ['./planning-add.component.scss']
 })
 export class PlanningAddComponent implements OnInit {
+  planningForm!: FormGroup;
+  readonly today = new Date();
 
-  shopRequests: any[] = [];
-
-  shop_request = '';
-  date = '';
-  time = '';
-  duration = 60;
-  loading = false;
+  @Optional() private dialogData: iPlanningDialogData = inject(Z_MODAL_DATA, { optional: true });
 
   constructor(
     private planningService: PlanningService,
-    private shopRequestService: ShopRequestService,
-    private route: ActivatedRoute,
-    private router: Router
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-
-    this.shopRequestService.getAll().subscribe(data => {
-      this.shopRequests = data;
-    });
-
-    this.route.queryParams.subscribe(params => {
-      if (params['shop_request']) {
-        this.shop_request = params['shop_request'];
-      }
+    this.planningForm = this.fb.group({
+      shop_request: [this.dialogData?.id ?? '', Validators.required],
+      date: ['', Validators.required],
+      time: ['', Validators.required],
+      duration: [30, [Validators.required, Validators.min(15)]],
     });
   }
 
-  submit() {
-    const startDate = new Date(`${this.date}T${this.time}`);
+  f(name: string) {
+    return this.planningForm.get(name);
+  }
 
-    const payload = {
-      shop_request: this.shop_request,
-      date: startDate,
-      duration: this.duration
-    };
+  verifyForm() {
+    if (this.planningForm.invalid) {
+      this.planningForm.markAllAsTouched();
+      return false;
+    }
+    return true;
+  }
 
-    this.loading = true;
+  submit(): Observable<boolean> {
+    const { shop_request, date, time, duration } = this.planningForm.value;
+    const selectedDate: Date = date instanceof Date ? date : new Date(date);
+    const [hours, minutes] = (time as string).split(':').map(Number);
+    const startDate = new Date(selectedDate);
+    startDate.setHours(hours, minutes, 0, 0);
 
-    this.planningService.create(payload).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/planning']);
-      },
-      error: err => {
+    const payload = { shop_request, date: startDate, duration };
+
+    return this.planningService.create(payload).pipe(
+      map(() => true),
+      catchError(err => {
         console.error(err);
-        this.loading = false;
-      }
-    });
+        return of(false);
+      })
+    );
   }
 }

@@ -4,6 +4,9 @@ import {SidebarComponent} from '@/shared/components/sidebar/sidebar.component';
 import {RegisterComponent} from '@/modules/customer/auth/pages/register/register.component';
 import {LoginComponent} from '@/modules/customer/auth/pages/login/login.component';
 import {AuthCallbackComponent} from '@/modules/customer/auth/pages/auth-callback/auth-callback.component';
+import {
+  CreateShopRequestComponent
+} from '@/modules/customer/shop-restaurant/pages/create-shop-request/create-shop-request.component';
 
 const routes: Routes = [
   {
@@ -23,6 +26,10 @@ const routes: Routes = [
         component: AuthCallbackComponent
       }
     ]
+  },
+  {
+    path: 'shops/add',
+    component: CreateShopRequestComponent
   }
 ];
 

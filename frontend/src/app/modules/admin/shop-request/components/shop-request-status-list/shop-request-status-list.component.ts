@@ -96,4 +96,109 @@ export class ShopRequestStatusListComponent implements OnInit {
   isExpanded(id: string): boolean {
     return this.expandedCards.has(id);
   }
+
+
+  openDialog() {
+    console.log(this.expandedCards);
+    this.dialogService.create({
+      zTitle: 'Voulez-vous rejeter cette demande ?',
+      zDescription: `Veuillez entrer la raison du rejet de cette demande, elle sera envoyée directement à la boutique par email.`,
+      zContent: RejectShopRequestComponent,
+      zData: {
+        id: Array.from(this.expandedCards)[0] ?? '',
+        reason: ''
+      } as iDialogData,
+      zCancelText: 'Annuler',
+      zOkText: 'Rejeter la demande',
+      zOnOk: instance => {
+        instance.markAllAsTouched();
+
+        const formData = instance.getFormData();
+
+        if (formData) {
+          console.log('Formulaire valide - Données:', formData);
+          const data = {
+            id: formData.id,
+            reason: formData.reason
+          }
+          this.shopRequestService.rejectDemand(data).subscribe({
+            next: () => {
+              this.showSuccesToast()
+              this.loadData();
+            },
+            error: () => {
+              this.showErrorToast()
+            }
+          }
+          );
+          return;
+        } else {
+          return false;
+        }
+      },
+      zWidth: '800px',
+    });
+  }
+
+  openPlanningDialog() {
+    const dialogRef = this.dialogService.create({
+      zTitle: 'Voulez-vous ajouter cette demande au planning ?',
+      zDescription: `Veuillez entrer la date, l'heure et la durée prévue pour le planning.`,
+      zContent: PlanningAddComponent,
+      zData: {
+        id: Array.from(this.expandedCards)[0] ?? '',
+        date: '',
+        time: '',
+        duration: ''
+      } as iPlanningDialogData,
+      zCancelText: 'Annuler',
+      zOkText: 'Ajouter au planning',
+      zOnOk: instance => {
+        if (!instance.verifyForm()) {
+          return false;
+        }
+
+        instance.submit().subscribe(success => {
+          if (success) {
+            dialogRef.close();
+            this.loadData();
+            this.showSuccesPlanningToast();
+          } else {
+            this.showErrorPlanningToast();
+          }
+        });
+
+        return false;
+      },
+      zWidth: '450px',
+    });
+  }
+
+  showSuccesToast() {
+    toast.success('La demande a été rejetée avec succès', {
+      description: 'La demande a été rejetée et un email sera transmis à la boutique.',
+      position: "top-right"
+    });
+  }
+
+  showErrorToast() {
+    toast.error('Erreur lors du rejet de la demande', {
+      description: "La demande n'a pas pu être rejetée, veuillez réessayer.",
+      position: "top-right"
+    })
+  }
+
+  showSuccesPlanningToast() {
+    toast.success('La demande a été rajoutée au planning', {
+      description: 'La demande a été rajoutée au planning et un email sera transmis à la boutique.',
+      position: "top-right"
+    });
+  }
+
+  showErrorPlanningToast() {
+    toast.error('Erreur lors de l\'ajout au planning', {
+      description: "La demande n'a pas pu être ajoutée au planning, veuillez réessayer.",
+      position: "top-right"
+    })
+  }
 }

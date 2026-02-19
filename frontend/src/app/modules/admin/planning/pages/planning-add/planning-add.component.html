@@ -1,43 +1,48 @@
-<div class="form-container">
+<form [formGroup]="planningForm" (ngSubmit)="submit()" class="space-y-5">
 
-  <h2>Ajouter un planning</h2>
+  <z-form-field class="calendar-full-width">
+    <z-form-label [zRequired]="true">Date</z-form-label>
+      <z-calendar
+        formControlName="date"
+        zMode="single"
+        [minDate]="today"
 
-  <form (ngSubmit)="submit()">
+        class="rounded-md border"
+      />
+    <span class="text-sm text-red-500" [innerHTML]="f('date')?.touched && f('date')?.hasError('required') ? 'La date est requise' : ''">
+    </span>
+  </z-form-field>
 
-    <select [(ngModel)]="shop_request" name="shop_request" required>
-      <option value="">Sélectionner une demande</option>
-      <option *ngFor="let req of shopRequests" [value]="req._id">
-        {{ req.name }} – {{ req.email }}
-      </option>
-    </select>
+  <z-form-field>
+    <z-form-label [zRequired]="true">Heure</z-form-label>
+    <z-form-control [errorMessage]="f('time')?.touched && f('time')?.hasError('required') ? 'L\'heure est requise' : ''">
+      <input
+        z-input
+        type="time"
+        formControlName="time"
+        min="08:00"
+        max="17:00"
+        class="w-full"
+        [zStatus]="f('time')?.touched && f('time')?.invalid ? 'error' : undefined"
+      />
+    </z-form-control>
+  </z-form-field>
 
-    <input
-      type="date"
-      [(ngModel)]="date"
-      name="date"
-      required
-    />
+  <z-form-field>
+    <z-form-label [zRequired]="true">Durée (minutes)</z-form-label>
+    <z-form-control [errorMessage]="f('duration')?.touched && f('duration')?.hasError('required') ? 'La durée est requise' : f('duration')?.touched && f('duration')?.hasError('min') ? 'La durée minimale est de 15 minutes' : ''">
+      <input
+        z-input
+        type="number"
+        formControlName="duration"
+        min="15"
+        step="15"
+        placeholder="Ex: 60"
+        class="w-full"
+        [zStatus]="f('duration')?.touched && f('duration')?.invalid ? 'error' : undefined"
+      />
+    </z-form-control>
+  </z-form-field>
 
-    <input
-      type="time"
-      [(ngModel)]="time"
-      name="time"
-      required
-    />
+</form>
 
-    <input
-      type="number"
-      [(ngModel)]="duration"
-      name="duration"
-      min="15"
-      step="15"
-      placeholder="Durée"
-    />
-
-    <button type="submit" [disabled]="loading">
-      {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
-    </button>
-
-  </form>
-
-</div>
