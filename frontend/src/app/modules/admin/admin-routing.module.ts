@@ -7,6 +7,7 @@ import {
   ShopRequestListComponent
 } from '@/modules/admin/shop-request/pages/shop-request-list/shop-request-list.component';
 import {SidebarComponent} from '@/shared/components/sidebar/sidebar.component';
+import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.component';
 
 
 const routes: Routes = [
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: 'shop-request/list',
         component: ShopRequestListComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
       },
     ]
   }
