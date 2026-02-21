@@ -26,6 +26,7 @@ import {ZardSelectComponent, ZardSelectItemComponent} from '@/shared/components/
 import {AngularTiptapEditorComponent} from '@flogeez/angular-tiptap-editor';
 import {ZardFormImports} from '@/shared/components/form';
 import {ZardCalendarComponent} from '@/shared/components/calendar';
+import { ShopVisualizationComponent } from './shop/components/shop-visualization/shop-visualization.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import {ZardCalendarComponent} from '@/shared/components/calendar';
     ShopRequestListComponent,
     ShopRequestStatusListComponent,
     RejectShopRequestComponent,
+    ShopVisualizationComponent,
   ],
     imports: [
         CommonModule,

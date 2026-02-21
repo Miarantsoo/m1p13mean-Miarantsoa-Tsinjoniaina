@@ -7,6 +7,9 @@ import {
   ShopRequestListComponent
 } from '@/modules/admin/shop-request/pages/shop-request-list/shop-request-list.component';
 import {SidebarComponent} from '@/shared/components/sidebar/sidebar.component';
+import {
+  ShopVisualizationComponent
+} from '@/modules/admin/shop/components/shop-visualization/shop-visualization.component';
 
 
 const routes: Routes = [
@@ -30,6 +33,10 @@ const routes: Routes = [
         path: 'shop-request/list',
         component: ShopRequestListComponent
       },
+      {
+        path: "shop",
+        component: ShopVisualizationComponent
+      }
     ]
   }
 ];
