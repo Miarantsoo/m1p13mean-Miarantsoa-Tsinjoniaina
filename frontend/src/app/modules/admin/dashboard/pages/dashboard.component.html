@@ -1,0 +1,85 @@
+<div class="dashboard">
+
+  <!-- ===== STATS ===== -->
+  <div class="stats-grid">
+
+    <div class="card">
+      <div class="card-header">Boutiques actives</div>
+      <div class="card-value">
+        {{ totalShops }}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Clients inscrits</div>
+      <div class="card-value">
+        {{ totalClients }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== AVANCEMENT ANNUEL ===== -->
+
+  <div class="card">
+
+    <!-- HEADER -->
+    <div class="card-top">
+      <h2 class="card-title">Avancement des loyers</h2>
+
+      <div class="year-selector">
+
+        <button
+          *ngIf="selectedYear > currentYear - 1"
+          (click)="changeYear(-1)">
+          ←
+        </button>
+
+        <span>{{ selectedYear }}</span>
+
+        <button
+          *ngIf="selectedYear < currentYear"
+          (click)="changeYear(1)">
+          →
+        </button>
+
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="rent-table">
+
+      <!-- TABLE HEADER -->
+      <div class="table-row table-header">
+        <div class="col-shop">Boutique</div>
+        <div class="col-month" *ngFor="let month of monthNames">
+          {{ month }}
+        </div>
+      </div>
+
+      <!-- TABLE BODY -->
+      <div
+        class="table-row"
+        *ngFor="let shop of shops">
+
+        <div class="col-shop shop-name">
+          {{ shop.name }}
+        </div>
+
+        <div
+          class="col-month"
+          *ngFor="let month of getYearData(shop)"
+        >
+          <div
+            class="status-square"
+            [ngClass]="month.toLowerCase()">
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

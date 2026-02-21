@@ -10,6 +10,7 @@ import {SidebarComponent} from '@/shared/components/sidebar/sidebar.component';
 import {
   ShopVisualizationComponent
 } from '@/modules/admin/shop/components/shop-visualization/shop-visualization.component';
+import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.component';
 
 
 const routes: Routes = [
@@ -36,7 +37,11 @@ const routes: Routes = [
       {
         path: "shop",
         component: ShopVisualizationComponent
-      }
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
     ]
   }
 ];

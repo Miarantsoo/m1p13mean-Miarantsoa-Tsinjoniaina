@@ -27,10 +27,11 @@ import {AngularTiptapEditorComponent} from '@flogeez/angular-tiptap-editor';
 import {ZardFormImports} from '@/shared/components/form';
 import {ZardCalendarComponent} from '@/shared/components/calendar';
 import { ShopVisualizationComponent } from './shop/components/shop-visualization/shop-visualization.component';
+import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.component';
 
 @NgModule({
   declarations: [
-    PlanningComponent,
+    DashboardComponent,
     PlanningAddComponent,
     ShopRequestComponent,
     ShopRequestListComponent,

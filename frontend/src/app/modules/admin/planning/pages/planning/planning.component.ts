@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import {PlanningService} from '@/modules/admin/planning/services/planning.service';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { PlanningService } from '@/modules/admin/planning/services/planning.service';
 
 @Component({
   selector: 'app-planning',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FullCalendarModule
+  ],
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.scss']
 })
@@ -45,6 +51,8 @@ export class PlanningComponent implements OnInit {
     }
   };
 
+  selectedEvent: any = null;
+
   constructor(private planningService: PlanningService) {}
 
   ngOnInit(): void {
@@ -72,15 +80,25 @@ export class PlanningComponent implements OnInit {
     });
   }
 
-  selectedEvent: any = null;
-
   onEventClick(info: any) {
     this.selectedEvent = {
       title: info.event.title,
       start: info.event.start,
       end: info.event.end,
       image: info.event.extendedProps.image,
-      name: info.event.extendedProps.name
+      name: info.event.extendedProps.name,
+      email: info.event.extendedProps.email
     };
+  }
+
+  closeModal() {
+    this.selectedEvent = null;
+  }
+
+  editEvent() {
+    if (this.selectedEvent) {
+      console.log('Éditer l\'événement:', this.selectedEvent);
+      this.closeModal();
+    }
   }
 }
