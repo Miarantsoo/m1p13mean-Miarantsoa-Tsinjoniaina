@@ -2,14 +2,23 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   NgZone,
   OnDestroy,
+  Output,
   ViewChild,
 } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+export interface ShopClickEvent {
+  name: string;
+  mesh: THREE.Mesh;
+  screenX: number;
+  screenY: number;
+}
 
 @Component({
   selector: 'app-shop-visualization',
@@ -21,6 +30,8 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
   @ViewChild('rendererCanvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  @Output() shopClicked = new EventEmitter<ShopClickEvent>();
+
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
@@ -28,6 +39,25 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
   private animFrameId!: number;
   private resizeObserver!: ResizeObserver;
   private ctrlListener!: (e: KeyboardEvent) => void;
+
+  private raycaster = new THREE.Raycaster();
+  private pointer = new THREE.Vector2();
+  private shopMeshes: THREE.Mesh[] = [];
+  private hoveredMesh: THREE.Mesh | null = null;
+  private selectedMesh: THREE.Mesh | null = null;
+  private originalMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
+
+  // UI state
+  selectedShop: ShopClickEvent | null = null;
+  hoveredShopName: string | null = null;
+  tooltipX = 0;
+  tooltipY = 0;
+
+  // Mouse move / click listeners
+  private mouseMoveListener!: (e: MouseEvent) => void;
+  private clickListener!: (e: MouseEvent) => void;
+  private mouseDownPos = { x: 0, y: 0 };
+  private mouseDownListener!: (e: MouseEvent) => void;
 
   constructor(private ngZone: NgZone) {}
 
@@ -37,6 +67,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     this.startRender();
     this.listenResize();
     this.listenCtrl();
+    this.listenMouse();
   }
 
   ngOnDestroy(): void {
@@ -46,6 +77,12 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     this.renderer?.dispose();
     document.removeEventListener('keydown', this.ctrlListener);
     document.removeEventListener('keyup', this.ctrlListener);
+    const canvas = this.canvasRef?.nativeElement;
+    if (canvas) {
+      canvas.removeEventListener('mousemove', this.mouseMoveListener);
+      canvas.removeEventListener('click', this.clickListener);
+      canvas.removeEventListener('mousedown', this.mouseDownListener);
+    }
   }
 
   private getSize(): { w: number; h: number } {
@@ -105,6 +142,20 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
         model.position.sub(center);
         this.scene.add(model);
 
+        model.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            this.shopMeshes.push(mesh);
+            // Sauvegarder le matériau original
+            this.originalMaterials.set(
+              mesh,
+              Array.isArray(mesh.material)
+                ? mesh.material.map((m) => m.clone())
+                : mesh.material.clone()
+            );
+          }
+        });
+
         const newBox = new THREE.Box3().setFromObject(model);
         const size = newBox.getSize(new THREE.Vector3());
         const newCenter = newBox.getCenter(new THREE.Vector3());
@@ -118,7 +169,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
         const dir = new THREE.Vector3(0, 89, 100).normalize();
         this.camera.position.copy(dir.multiplyScalar(dist).add(newCenter));
         this.camera.lookAt(newCenter);
-        model.position.y = 20
+        model.position.y = 20;
 
         this.controls.target.copy(newCenter);
         this.controls.maxDistance = dist;
@@ -165,5 +216,132 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     };
     document.addEventListener('keydown', this.ctrlListener);
     document.addEventListener('keyup', this.ctrlListener);
+  }
+
+  private listenMouse(): void {
+    const canvas = this.canvasRef.nativeElement;
+
+    // Enregistrer la position du mousedown pour distinguer clic vs drag
+    this.mouseDownListener = (e: MouseEvent) => {
+      this.mouseDownPos = { x: e.clientX, y: e.clientY };
+    };
+
+    this.mouseMoveListener = (e: MouseEvent) => {
+      this.ngZone.runOutsideAngular(() => {
+        const rect = canvas.getBoundingClientRect();
+        this.pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        this.pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        this.raycaster.setFromCamera(this.pointer, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.shopMeshes, false);
+        const hit = intersects.length > 0 ? (intersects[0].object as THREE.Mesh) : null;
+
+        if (hit !== this.hoveredMesh) {
+          // Réinitialiser le hover précédent (sauf si c'est le mesh sélectionné)
+          if (this.hoveredMesh && this.hoveredMesh !== this.selectedMesh) {
+            this.restoreMaterial(this.hoveredMesh);
+          }
+          this.hoveredMesh = hit;
+          if (hit && hit !== this.selectedMesh) {
+            this.applyHighlight(hit, 0x64b5f6); // bleu clair hover
+          }
+        }
+
+        this.ngZone.run(() => {
+          if (hit) {
+            this.hoveredShopName = this.getShopName(hit);
+            this.tooltipX = e.clientX;
+            this.tooltipY = e.clientY;
+            canvas.style.cursor = 'pointer';
+          } else {
+            this.hoveredShopName = null;
+            canvas.style.cursor = 'grab';
+          }
+        });
+      });
+    };
+
+    this.clickListener = (e: MouseEvent) => {
+      const dx = Math.abs(e.clientX - this.mouseDownPos.x);
+      const dy = Math.abs(e.clientY - this.mouseDownPos.y);
+      if (dx > 5 || dy > 5) return;
+
+      const rect = canvas.getBoundingClientRect();
+      this.pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      this.pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.pointer, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.shopMeshes, false);
+
+      this.ngZone.run(() => {
+        if (intersects.length > 0) {
+          const mesh = intersects[0].object as THREE.Mesh;
+
+          // Désélectionner l'ancien mesh sélectionné
+          if (this.selectedMesh && this.selectedMesh !== mesh) {
+            this.restoreMaterial(this.selectedMesh);
+          }
+
+          this.selectedMesh = mesh;
+          this.applyHighlight(mesh, 0xff7043); // orange pour la sélection
+
+          const event: ShopClickEvent = {
+            name: this.getShopName(mesh),
+            mesh,
+            screenX: e.clientX,
+            screenY: e.clientY,
+          };
+          this.selectedShop = event;
+          this.shopClicked.emit(event);
+        } else {
+          // Clic dans le vide → désélectionner
+          if (this.selectedMesh) {
+            this.restoreMaterial(this.selectedMesh);
+            this.selectedMesh = null;
+          }
+          this.selectedShop = null;
+        }
+      });
+    };
+
+    canvas.addEventListener('mousedown', this.mouseDownListener);
+    canvas.addEventListener('mousemove', this.mouseMoveListener);
+    canvas.addEventListener('click', this.clickListener);
+  }
+
+  private getShopName(mesh: THREE.Mesh): string {
+    const raw = mesh.name || mesh.parent?.name || 'Boutique inconnue';
+    return raw.replace(/_\d+$/, '').replace(/_/g, ' ').trim() || 'Boutique inconnue';
+  }
+
+  private applyHighlight(mesh: THREE.Mesh, color: number): void {
+    const highlight = (mat: THREE.Material): THREE.Material => {
+      const m = (mat as THREE.MeshStandardMaterial).clone();
+      (m as THREE.MeshStandardMaterial).emissive = new THREE.Color(color);
+      (m as THREE.MeshStandardMaterial).emissiveIntensity = 0.6;
+      return m;
+    };
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map(highlight);
+    } else {
+      mesh.material = highlight(mesh.material);
+    }
+  }
+
+  private restoreMaterial(mesh: THREE.Mesh): void {
+    const original = this.originalMaterials.get(mesh);
+    if (original) {
+      mesh.material = Array.isArray(original)
+        ? original.map((m) => m.clone())
+        : (original as THREE.Material).clone();
+    }
+  }
+
+  deselectShop(): void {
+    if (this.selectedMesh) {
+      this.restoreMaterial(this.selectedMesh);
+      this.selectedMesh = null;
+    }
+    this.selectedShop = null;
   }
 }
