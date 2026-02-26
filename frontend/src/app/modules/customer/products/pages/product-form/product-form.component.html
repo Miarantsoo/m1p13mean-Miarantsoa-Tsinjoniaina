@@ -1,0 +1,173 @@
+<div class="p-4 w-4/5 mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">
+    {{ isEditMode ? 'Modifier le produit' : 'Ajouter un produit' }}
+  </h1>
+
+  <z-card>
+    <form [formGroup]="productForm" (ngSubmit)="submit()" class="space-y-6 p-6">
+      <!-- Photo -->
+      <div class="flex gap-6 items-start">
+        <div class="flex-shrink-0">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Photo du produit
+            <span *ngIf="!isEditMode" class="text-red-500">*</span>
+          </label>
+          <label class="cursor-pointer block">
+            <div [class]="'w-48 h-48 rounded-lg overflow-hidden border-2 flex items-center justify-center bg-gray-100 transition-colors ' +
+                         (submitted && !imagePreview && !isEditMode ? 'border-red-500 hover:border-red-600' : 'border-gray-300 hover:border-blue-400')">
+              <img
+                *ngIf="imagePreview"
+                [src]="imagePreview"
+                alt="Aperçu"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!imagePreview" class="flex flex-col items-center justify-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-base text-center">Cliquez pour ajouter</span>
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              class="hidden"
+            />
+          </label>
+          <div *ngIf="submitted && !imagePreview && !isEditMode" class="mt-1">
+            <p class="text-xs text-red-600">La photo est obligatoire</p>
+          </div>
+        </div>
+
+        <div class="flex-1 space-y-4">
+          <!-- Nom -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Nom du produit <span class="text-red-500">*</span>
+            </label>
+            <input
+              z-input
+              type="text"
+              formControlName="name"
+              [class.border-red-500]="submitted && f['name'].errors"
+              class="w-full mt-2"
+              placeholder="Ex: T-shirt Nike"
+            />
+            <div *ngIf="submitted && f['name'].errors" class="mt-1">
+              <p *ngIf="f['name'].errors['required']" class="text-xs text-red-600">Le nom est obligatoire</p>
+              <p *ngIf="f['name'].errors['minlength']" class="text-xs text-red-600">Le nom doit contenir au moins 2 caractères</p>
+            </div>
+          </div>
+
+          <!-- Prix et Stock -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Prix (Ar) <span class="text-red-500">*</span>
+              </label>
+              <input
+                z-input
+                type="number"
+                formControlName="price"
+                [class.border-red-500]="submitted && f['price'].errors"
+                class="w-full mt-2"
+                placeholder="25000"
+                min="0"
+              />
+              <div *ngIf="submitted && f['price'].errors" class="mt-1">
+                <p *ngIf="f['price'].errors['required']" class="text-xs text-red-600">Le prix est obligatoire</p>
+                <p *ngIf="f['price'].errors['min']" class="text-xs text-red-600">Le prix doit être positif</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Stock <span class="text-red-500">*</span>
+              </label>
+              <input
+                z-input
+                type="number"
+                formControlName="stock"
+                [class.border-red-500]="submitted && f['stock'].errors"
+                class="w-full mt-2"
+                placeholder="100"
+                min="0"
+              />
+              <div *ngIf="submitted && f['stock'].errors" class="mt-1">
+                <p *ngIf="f['stock'].errors['required']" class="text-xs text-red-600">Le stock est obligatoire</p>
+                <p *ngIf="f['stock'].errors['min']" class="text-xs text-red-600">Le stock doit être positif</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Catégorie -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Catégorie <span class="text-red-500">*</span>
+            </label>
+            <select
+              z-input
+              formControlName="category"
+              [class.border-red-500]="submitted && f['category'].errors"
+              class="w-full mt-2"
+            >
+              <option value="">Sélectionnez une catégorie</option>
+              <option *ngFor="let category of categories" [value]="category._id">
+                {{ category.name }}
+              </option>
+            </select>
+            <div *ngIf="submitted && f['category'].errors" class="mt-1">
+              <p *ngIf="f['category'].errors['required']" class="text-xs text-red-600">La catégorie est obligatoire</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Description courte <span class="text-red-500">*</span>
+        </label>
+        <textarea
+          z-input
+          formControlName="shortDescription"
+          [class.border-red-500]="submitted && f['shortDescription'].errors"
+          rows="6"
+          class="w-full resize-none mt-2"
+          placeholder="Décrivez brièvement votre produit..."
+        ></textarea>
+        <div *ngIf="submitted && f['shortDescription'].errors" class="mt-1">
+          <p *ngIf="f['shortDescription'].errors['required']" class="text-xs text-red-600">La description est obligatoire</p>
+          <p *ngIf="f['shortDescription'].errors['minlength']" class="text-xs text-red-600">La description doit contenir au moins 10 caractères</p>
+        </div>
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex justify-end gap-3">
+        <button
+          z-button
+          zType="ghost"
+          type="button"
+          (click)="cancel()"
+          [disabled]="loading"
+        >
+          Annuler
+        </button>
+        <button
+          z-button
+          type="submit"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading">
+            {{ isEditMode ? 'Modification...' : 'Création...' }}
+          </span>
+          <span *ngIf="!loading">
+            {{ isEditMode ? 'Modifier' : 'Créer' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </z-card>
+</div>

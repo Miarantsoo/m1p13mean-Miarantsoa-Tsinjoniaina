@@ -1,0 +1,33 @@
+<div class="h-fit w-full p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Mes Produits</h1>
+    <button
+      z-button
+      zType="default"
+      (click)="goToAddProduct()"
+    >
+      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" x2="12" y1="5" y2="19"/>
+        <line x1="5" x2="19" y1="12" y2="12"/>
+      </svg>
+      Ajouter un produit
+    </button>
+  </div>
+
+  <z-tab-group (zTabChange)="onTabChange($event)">
+    <z-tab label="Tous">
+      <app-product-category-list
+        #allTab
+        [categoryId]="'all'"
+        [shopId]="shopId"
+      />
+    </z-tab>
+
+    <z-tab *ngFor="let category of categories" [label]="category.name">
+      <app-product-category-list
+        [categoryId]="category._id"
+        [shopId]="shopId"
+      />
+    </z-tab>
+  </z-tab-group>
+</div>
