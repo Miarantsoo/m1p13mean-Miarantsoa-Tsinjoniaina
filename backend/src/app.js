@@ -9,6 +9,7 @@ import authRoutes from "./auth/auth.routes.js";
 import userRoutes from "./admin/user/user.routes.js";
 import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
 import planningRoutes from "./admin/planning/planning.routes.js";
+import shopSlotRoutes from "./admin/shop-slot/shop-slot.routes.js";
 import {configureGoogleOAuth} from "@/auth/google.oauth.js";
 import passport from "passport";
 
@@ -62,5 +63,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/shop-requests", shopRequestRoutes);
 app.use("/api/planning", planningRoutes);
+app.use("/api/shop-slots", shopSlotRoutes);
 
 export default app;
