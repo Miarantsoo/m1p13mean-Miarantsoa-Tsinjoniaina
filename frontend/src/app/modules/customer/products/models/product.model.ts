@@ -8,6 +8,7 @@ export interface Product {
   available: boolean;
   shop: string | Shop;
   category: string | Category;
+  promotion?: Promotion; // ✅ AJOUTEZ cette ligne
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,6 +27,21 @@ export interface Category {
   description?: string;
 }
 
+// ✅ AJOUTEZ ces interfaces
+export interface Promotion {
+  _id: string;
+  product: string;
+  shop: string;
+  discountType: 'percentage' | 'fixed';
+  discountValue: number;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  description?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface ProductFormData {
   name: string;
   price: number;
@@ -39,6 +55,18 @@ export interface ProductFormData {
 export interface ProductResponse {
   success: boolean;
   data: Product | Product[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+  };
+  message?: string;
+}
+
+export interface PromotionResponse {
+  success: boolean;
+  data: Promotion | Promotion[];
   pagination?: {
     total: number;
     page: number;

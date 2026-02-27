@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const shopSchema = new mongoose.Schema(
     {
@@ -32,7 +32,7 @@ const shopSchema = new mongoose.Schema(
             default: "inactive"
         },
         color: {
-            type: string,
+            type: String,
             required: true
         }
     },
@@ -42,5 +42,4 @@ const shopSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model("Shop", shopSchema);
-
+module.exports = mongoose.model("Shop", shopSchema);
