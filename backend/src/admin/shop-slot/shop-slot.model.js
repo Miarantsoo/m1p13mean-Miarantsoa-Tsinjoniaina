@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-/**
-
 const vector3Schema = new mongoose.Schema(
     {
         x: { type: Number, default: 0 },
