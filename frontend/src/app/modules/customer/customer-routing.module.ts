@@ -7,6 +7,8 @@ import {AuthCallbackComponent} from '@/modules/customer/auth/pages/auth-callback
 import {
   CreateShopRequestComponent
 } from '@/modules/customer/shop-restaurant/pages/create-shop-request/create-shop-request.component';
+import {ProductListComponent} from '@/modules/customer/products/pages/product-list/product-list.component';
+import {ProductFormComponent} from '@/modules/customer/products/pages/product-form/product-form.component';
 
 const routes: Routes = [
   {
@@ -24,12 +26,25 @@ const routes: Routes = [
       {
         path: 'auth/callback',
         component: AuthCallbackComponent
+      },
+      {
+        path: 'shop',
+        children: [
+          {
+            path:'add',
+            component: CreateShopRequestComponent,
+          },
+          {
+            path: 'products',
+            children: [
+              { path: '', component: ProductListComponent },
+              { path: 'add', component: ProductFormComponent },
+              { path: 'edit/:id', component: ProductFormComponent }
+            ]
+          }
+        ]
       }
     ]
-  },
-  {
-    path: 'shops/add',
-    component: CreateShopRequestComponent
   }
 ];
 
