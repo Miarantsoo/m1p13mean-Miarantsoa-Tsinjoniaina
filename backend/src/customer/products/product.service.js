@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const Product = require('./product.model.js');
 
+import '../../admin/shop/shop.model.js';
+import './category.model.js';
+
 export const getAllProducts = async (filters = {}) => {
     const { shopId, categoryId, available, search, page = 1, limit = 10 } = filters;
 
@@ -56,7 +59,7 @@ export const getProductById = async (productId) => {
 };
 
 export const createProduct = async (productData) => {
-    const Shop = require('./shop.model.js');
+    const Shop = require('../../admin/shop/shop.model.js');
     const shopExists = await Shop.findById(productData.shop);
 
     if (!shopExists) {

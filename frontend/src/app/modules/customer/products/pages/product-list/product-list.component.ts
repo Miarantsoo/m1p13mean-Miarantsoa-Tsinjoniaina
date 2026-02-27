@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
@@ -20,11 +20,11 @@ import { ZardButtonComponent } from '@/shared/components/button/button.component
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
-export class ProductListComponent implements OnInit, AfterViewInit {
+export class ProductListComponent implements OnInit {
   @ViewChild('allTab') allTab!: ProductCategoryListComponent;
 
   categories: Category[] = [];
-  shopId = '69a0016ce198485ddf628ca1'; // Votre shop ID
+  shopId = '69a0016ce198485ddf628ca1';
   activeTab = 0;
 
   constructor(
@@ -34,10 +34,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.loadCategories();
-  }
-
-  ngAfterViewInit() {
-    // Le premier onglet se charge automatiquement
   }
 
   loadCategories() {
@@ -51,7 +47,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // CORRECTION: Le type de $event est { index: number; label: string; tab: ZardTabComponent; }
   onTabChange(event: { index: number; label: string }) {
     this.activeTab = event.index;
   }

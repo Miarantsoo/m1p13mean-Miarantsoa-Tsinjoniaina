@@ -41,6 +41,21 @@ const productSchema = new mongoose.Schema({
     timestamps: true
 });
 
+productSchema.virtual('promotion', {
+    ref: 'Promotion',
+    localField: '_id',
+    foreignField: 'product',
+    justOne: true,
+    match: function() {
+        const now = new Date();
+        return {
+            isActive: true,
+            startDate: { $lte: now },
+            endDate: { $gte: now }
+        };
+    }
+});
+
 productSchema.index({ shop: 1 });
 productSchema.index({ category: 1 });
 productSchema.index({ available: 1 });

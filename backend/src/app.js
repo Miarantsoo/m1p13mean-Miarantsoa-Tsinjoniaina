@@ -11,6 +11,7 @@ import shopRequestRoutes from "./admin/shopRequest/shopRequest.routes.js";
 import planningRoutes from "./admin/planning/planning.routes.js";
 import shopSlotRoutes from "./admin/shop-slot/shop-slot.routes.js";
 import productsRoutes from "./customer/products/product.routes.js";
+import promotionRoutes from "./customer/promotion/promotion.routes.js";
 
 import {configureGoogleOAuth} from "@/auth/google.oauth.js";
 import passport from "passport";
@@ -67,5 +68,6 @@ app.use("/api/shop-requests", shopRequestRoutes);
 app.use("/api/planning", planningRoutes);
 app.use("/api/shop-slots", shopSlotRoutes);
 app.use("/api/product", productsRoutes);
+app.use("/api/promotions", promotionRoutes);
 
 export default app;

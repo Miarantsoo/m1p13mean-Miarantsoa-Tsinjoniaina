@@ -2,8 +2,10 @@ import { Component, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { PromotionService } from '../../services/promotion.service';
 import { Product } from '../../models/product.model';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { PromotionModalComponent } from '../promotion-modal/promotion-modal.component';
 import { ZardLoaderComponent } from '@/shared/components/loader/loader.component';
 import { ZardDividerComponent } from '@/shared/components/divider';
 import { ZardPaginationComponent } from '@/shared/components/pagination';
@@ -14,6 +16,7 @@ import { ZardPaginationComponent } from '@/shared/components/pagination';
   imports: [
     CommonModule,
     ProductCardComponent,
+    PromotionModalComponent,
     ZardLoaderComponent,
     ZardDividerComponent,
     ZardPaginationComponent
@@ -33,10 +36,14 @@ export class ProductCategoryListComponent implements OnInit {
   limit = signal(12);
   limitOptions = [6, 12, 24, 48];
 
+  showPromotionModal = false;
+  selectedProduct: Product | null = null;
+
   Math = Math;
 
   constructor(
     private productService: ProductService,
+    private promotionService: PromotionService,
     private router: Router
   ) {}
 
@@ -56,6 +63,10 @@ export class ProductCategoryListComponent implements OnInit {
     this.productService.getProductsByShop(this.shopId, filters).subscribe({
       next: (response) => {
         this.products = Array.isArray(response.data) ? response.data : [];
+
+        // Charger les promotions pour chaque produit
+        this.loadPromotions();
+
         if (response.pagination) {
           this.totalPages.set(response.pagination.pages);
           this.totalItems.set(response.pagination.total);
@@ -66,6 +77,21 @@ export class ProductCategoryListComponent implements OnInit {
         console.error('Erreur lors du chargement des produits:', error);
         this.loading.set(false);
       }
+    });
+  }
+
+  loadPromotions() {
+    this.products.forEach(product => {
+      this.promotionService.getActivePromotionForProduct(product._id!).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            product.promotion = response.data;
+          }
+        },
+        error: (error: any) => {
+          console.error('Erreur lors du chargement de la promotion:', error);
+        }
+      });
     });
   }
 
@@ -96,5 +122,48 @@ export class ProductCategoryListComponent implements OnInit {
         }
       });
     }
+  }
+
+  onAddPromotion(product: Product) {
+    this.selectedProduct = product;
+    this.showPromotionModal = true;
+  }
+
+  onRemovePromotion(product: Product) {
+    if (product.promotion && confirm('Êtes-vous sûr de vouloir supprimer cette promotion ?')) {
+      this.promotionService.deletePromotion(product.promotion._id).subscribe({
+        next: () => {
+          alert('Promotion supprimée avec succès');
+          this.loadProducts();
+        },
+        error: (error: any) => {
+          console.error('Erreur lors de la suppression:', error);
+          alert('Erreur lors de la suppression de la promotion');
+        }
+      });
+    }
+  }
+
+  closePromotionModal() {
+    this.showPromotionModal = false;
+    this.selectedProduct = null;
+  }
+
+  savePromotion(promotionData: any) {
+    console.log("→ savePromotion reçu :", promotionData);
+
+    this.promotionService.createPromotion(promotionData).subscribe({
+      next: (response) => {
+        console.log("Succès création promo :", response);
+        alert('Promotion créée avec succès');
+        this.closePromotionModal();
+        this.loadProducts();
+      },
+      error: (err) => {
+        console.error("Erreur API création promo :", err);
+        alert(err.error?.message || 'Erreur lors de la création');
+      },
+      complete: () => console.log("Requête createPromotion terminée")
+    });
   }
 }

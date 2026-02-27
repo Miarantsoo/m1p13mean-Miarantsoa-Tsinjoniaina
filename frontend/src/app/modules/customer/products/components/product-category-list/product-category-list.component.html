@@ -31,8 +31,18 @@
           [product]="product"
           (edit)="onEditProduct($event)"
           (delete)="onDeleteProduct($event)"
+          (addPromotion)="onAddPromotion($event)"
+          (removePromotion)="onRemovePromotion($event)"
         />
       </div>
+
+      <app-promotion-modal
+        *ngIf="showPromotionModal"
+        [product]="selectedProduct!"
+        [shopId]="shopId"
+        (close)="closePromotionModal()"
+        (save)="savePromotion($event)"
+      />
     </div>
 
     <!-- Pagination -->
