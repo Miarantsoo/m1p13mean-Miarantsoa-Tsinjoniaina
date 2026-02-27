@@ -1,0 +1,144 @@
+<div class="flex flex-col gap-4 p-4">
+  <p class="text-lg font-medium">{{ shopSlot.shop?.name ?? shopSlot.category.name }}</p>
+
+  @if (shopSlot.shop) {
+    <div class="flex flex-col gap-2">
+      @if (shopSlot.shop.logo_url) {
+        <img [src]="shopSlot.shop.logo_url" [alt]="shopSlot.shop.name" class="w-20 h-20 rounded-md object-cover" />
+      }
+      @if (shopSlot.shop.description) {
+        <p class="text-sm text-muted-foreground">{{ shopSlot.shop.description }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex flex-col gap-1 text-sm">
+    <p><span class="font-medium">Catégorie :</span> {{ shopSlot.category.name }}</p>
+    <p><span class="font-medium">Loyer :</span> {{ shopSlot.category.rent_price }} Ar</p>
+    <p><span class="font-medium">Statut :</span> {{ shopSlot.status }}</p>
+  </div>
+
+  @if (!shopSlot.shop) {
+    <div class="border-t pt-4 mt-2">
+
+      <!-- Vue formulaire manager -->
+      @if (selectedRequest) {
+        <div class="flex items-center gap-2 mb-4">
+          <button z-button zType="ghost" zSize="sm" class="cursor-pointer" (click)="backToList()">
+            <z-icon zType="arrow-left" />
+          </button>
+          <p class="font-medium">{{ selectedRequest.name }}</p>
+        </div>
+
+        <form [formGroup]="managerForm" (ngSubmit)="submitAssignment()" class="flex flex-col gap-3">
+          <z-form-field>
+            <z-form-label>Prénom</z-form-label>
+            <z-form-control>
+              <input z-input formControlName="first_name" placeholder="Prénom du manager" />
+            </z-form-control>
+            @if (managerForm.get('first_name')?.invalid && managerForm.get('first_name')?.touched) {
+              <z-form-message>Prénom requis (min. 2 caractères)</z-form-message>
+            }
+          </z-form-field>
+
+          <z-form-field>
+            <z-form-label>Nom</z-form-label>
+            <z-form-control>
+              <input z-input formControlName="last_name" placeholder="Nom du manager" />
+            </z-form-control>
+          </z-form-field>
+
+          <z-form-field>
+            <z-form-label>Email</z-form-label>
+            <z-form-control>
+              <input z-input type="email" formControlName="email" placeholder="email@exemple.com" />
+            </z-form-control>
+            @if (managerForm.get('email')?.invalid && managerForm.get('email')?.touched) {
+              <z-form-message>Email invalide</z-form-message>
+            }
+          </z-form-field>
+
+          <z-form-field>
+            <z-form-label>Mot de passe</z-form-label>
+            <z-form-control>
+              <input z-input type="password" formControlName="password" placeholder="Min. 8 caractères" />
+            </z-form-control>
+            @if (managerForm.get('password')?.invalid && managerForm.get('password')?.touched) {
+              <z-form-message>Mot de passe requis (min. 8 caractères)</z-form-message>
+            }
+          </z-form-field>
+
+          <z-form-field>
+            <z-form-label>Téléphone</z-form-label>
+            <z-form-control>
+              <input z-input formControlName="phone_number" placeholder="034 00 000 00" />
+            </z-form-control>
+            @if (managerForm.get('phone_number')?.invalid && managerForm.get('phone_number')?.touched) {
+              <z-form-message>Numéro de téléphone requis</z-form-message>
+            }
+          </z-form-field>
+
+          <z-form-field>
+            <z-form-label>Couleur</z-form-label>
+            <z-form-control>
+              <input
+                  class="cursor-pointer"
+                  [style.background]="selectedColor"
+                  [(colorPicker)]="selectedColor"
+                  [cpOKButton]="true"
+                  [cpOKButtonText]="'Select'"
+                  [cpCancelButton]="true"
+                  [cpSaveClickOutside]="false"
+                  [cpDisableInput]="false"
+                  [cpAlphaChannel]="'disabled'"
+                  [cpOutputFormat]="'hex'"
+                  [cpPresetColors]="presetColors"
+              />
+            </z-form-control>
+            @if (managerForm.get('color')?.invalid && managerForm.get('color')?.touched) {
+              <z-form-message>Couleur requise</z-form-message>
+            }
+          </z-form-field>
+
+          <button
+            z-button
+            type="submit"
+            class="mt-2 cursor-pointer"
+            [disabled]="managerForm.invalid || assigning"
+          >
+            @if (assigning) {
+              Assignation en cours...
+            } @else {
+              Assigner la boutique
+            }
+          </button>
+        </form>
+
+      } @else {
+        <!-- Vue liste des demandes -->
+        <p class="font-medium mb-2">Demandes en attente</p>
+
+        @if (shopRequestPending.length === 0) {
+          <p class="text-sm text-muted-foreground">Aucune demande en attente.</p>
+        } @else {
+          <div class="flex flex-col gap-2">
+            @for (request of shopRequestPending; track request._id) {
+              <button
+                class="flex items-center gap-3 rounded-md border p-3 text-left transition-colors hover:bg-accent cursor-pointer"
+                (click)="selectRequest(request)"
+              >
+                @if (request.image_link) {
+                  <img [src]="request.image_link" [alt]="request.name" class="w-10 h-10 rounded-md object-cover" />
+                }
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm truncate">{{ request.name }}</p>
+                  <p class="text-xs text-muted-foreground truncate">{{ request.email }}</p>
+                </div>
+              </button>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

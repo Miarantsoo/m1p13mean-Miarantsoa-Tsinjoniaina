@@ -2,9 +2,9 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, inject,
   NgZone,
-  OnDestroy,
+  OnDestroy, OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -12,6 +12,12 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {ShopSlot} from '@/modules/admin/shop/models/shop.model';
+import {ShopAdminService} from '@/modules/admin/shop/services/shop-admin.service';
+import {ZardSheetService, ZardSheetRef} from '@/shared/components/sheet';
+import {ShopInfoSheetComponent} from '@/modules/admin/shop/components/shop-info-sheet/shop-info-sheet.component';
+import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
+import {ShopRequest} from '@/modules/admin/shop-request/models/shop-request.model';
 
 export interface ShopClickEvent {
   name: string;
@@ -26,7 +32,11 @@ export interface ShopClickEvent {
   templateUrl: './shop-visualization.component.html',
   styleUrl: './shop-visualization.component.scss',
 })
-export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
+export class ShopVisualizationComponent implements OnInit, AfterViewInit, OnDestroy {
+  private shopAdminService = inject(ShopAdminService);
+  private sheetService = inject(ZardSheetService);
+  private sheetRef: ZardSheetRef<ShopInfoSheetComponent> | null = null;
+
   @ViewChild('rendererCanvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -40,6 +50,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
   private resizeObserver!: ResizeObserver;
   private ctrlListener!: (e: KeyboardEvent) => void;
 
+  // Raycasting
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2();
   private shopMeshes: THREE.Mesh[] = [];
@@ -59,7 +70,20 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
   private mouseDownPos = { x: 0, y: 0 };
   private mouseDownListener!: (e: MouseEvent) => void;
 
+  private shopSlots: ShopSlot[] = [];
+  private modelLoaded = false;
+
   constructor(private ngZone: NgZone) {}
+
+  ngOnInit(): void {
+    this.shopAdminService.getAll().subscribe(res => {
+      this.shopSlots = res;
+      if (this.modelLoaded) {
+        this.applyShopColors();
+      }
+    });
+  }
+
 
   ngAfterViewInit(): void {
     this.initThree();
@@ -174,6 +198,11 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
         this.controls.target.copy(newCenter);
         this.controls.maxDistance = dist;
         this.controls.update();
+
+        this.modelLoaded = true;
+        if (this.shopSlots.length > 0) {
+          this.applyShopColors();
+        }
       },
       undefined,
       (error) => console.error('Erreur chargement mall.glb :', error)
@@ -218,10 +247,14 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     document.addEventListener('keyup', this.ctrlListener);
   }
 
+  // private getSelectedShop(mesh: THREE.Mesh): void {
+  //   const shopSlot = this.shopSlots.filter(v => v.glb_node_name === mesh.name)[0];
+  //   this.selectedMeshShop = shopSlot;
+  // }
+
   private listenMouse(): void {
     const canvas = this.canvasRef.nativeElement;
 
-    // Enregistrer la position du mousedown pour distinguer clic vs drag
     this.mouseDownListener = (e: MouseEvent) => {
       this.mouseDownPos = { x: e.clientX, y: e.clientY };
     };
@@ -237,7 +270,6 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
         const hit = intersects.length > 0 ? (intersects[0].object as THREE.Mesh) : null;
 
         if (hit !== this.hoveredMesh) {
-          // Réinitialiser le hover précédent (sauf si c'est le mesh sélectionné)
           if (this.hoveredMesh && this.hoveredMesh !== this.selectedMesh) {
             this.restoreMaterial(this.hoveredMesh);
           }
@@ -262,6 +294,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     };
 
     this.clickListener = (e: MouseEvent) => {
+      // Ignorer si c'est un drag (déplacement > 5px)
       const dx = Math.abs(e.clientX - this.mouseDownPos.x);
       const dy = Math.abs(e.clientY - this.mouseDownPos.y);
       if (dx > 5 || dy > 5) return;
@@ -282,6 +315,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
             this.restoreMaterial(this.selectedMesh);
           }
 
+          // Sélectionner le nouveau mesh
           this.selectedMesh = mesh;
           this.applyHighlight(mesh, 0xff7043); // orange pour la sélection
 
@@ -293,6 +327,7 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
           };
           this.selectedShop = event;
           this.shopClicked.emit(event);
+          this.openShopSheet(mesh);
         } else {
           // Clic dans le vide → désélectionner
           if (this.selectedMesh) {
@@ -310,8 +345,8 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
   }
 
   private getShopName(mesh: THREE.Mesh): string {
-    const raw = mesh.name || mesh.parent?.name || 'Boutique inconnue';
-    return raw.replace(/_\d+$/, '').replace(/_/g, ' ').trim() || 'Boutique inconnue';
+    const shopSlot = this.shopSlots.filter(v => v.glb_node_name === mesh.name)[0];
+    return shopSlot?.shop ? shopSlot.shop.name : shopSlot.category.name;
   }
 
   private applyHighlight(mesh: THREE.Mesh, color: number): void {
@@ -328,6 +363,42 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /** Applique les couleurs des boutiques sur les meshes */
+  private applyShopColors(): void {
+    const EMPTY_COLOR = 0x9e9e9e; // gris terne pour les slots sans shop
+
+    for (const mesh of this.shopMeshes) {
+      const shopSlot = this.shopSlots.find(v => v.glb_node_name === mesh.name);
+      if (!shopSlot) continue;
+
+      const color = shopSlot.shop?.color
+        ? new THREE.Color(shopSlot.shop.color)
+        : new THREE.Color(EMPTY_COLOR);
+
+      console.log(shopSlot.shop?.color, color.getHex())
+
+      const applyColor = (mat: THREE.Material): THREE.Material => {
+        const m = (mat as THREE.MeshStandardMaterial).clone();
+        (m as THREE.MeshStandardMaterial).color = color;
+        return m;
+      };
+
+      if (Array.isArray(mesh.material)) {
+        mesh.material = mesh.material.map(applyColor);
+      } else {
+        mesh.material = applyColor(mesh.material);
+      }
+
+      // Mettre à jour le matériau original sauvegardé (pour que restore fonctionne)
+      this.originalMaterials.set(
+        mesh,
+        Array.isArray(mesh.material)
+          ? mesh.material.map((m) => m.clone())
+          : (mesh.material as THREE.Material).clone()
+      );
+    }
+  }
+
   private restoreMaterial(mesh: THREE.Mesh): void {
     const original = this.originalMaterials.get(mesh);
     if (original) {
@@ -335,6 +406,27 @@ export class ShopVisualizationComponent implements AfterViewInit, OnDestroy {
         ? original.map((m) => m.clone())
         : (original as THREE.Material).clone();
     }
+  }
+
+  private openShopSheet(mesh: THREE.Mesh): void {
+    this.sheetRef?.close();
+
+    const shopSlot = this.shopSlots.find(v => v.glb_node_name === mesh.name);
+    if (!shopSlot) return;
+
+    this.sheetRef = this.sheetService.create({
+      zContent: ShopInfoSheetComponent,
+      zTitle: shopSlot.shop?.name ?? shopSlot.category.name,
+      zDescription: 'Détails de la boutique',
+      zSide: 'right',
+      zSize: 'lg',
+      zHideFooter: true,
+      // zMaskClosable: false,
+      zData: shopSlot,
+      zOnCancel: () => {
+        this.deselectShop();
+      },
+    });
   }
 
   deselectShop(): void {

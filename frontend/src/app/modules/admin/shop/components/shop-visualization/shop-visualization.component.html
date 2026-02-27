@@ -19,18 +19,6 @@
         </div>
       }
 
-      @if (selectedShop) {
-        <div class="shop-info-panel">
-          <div class="shop-info-header">
-            <span class="shop-info-title">{{ selectedShop.name }}</span>
-            <button class="shop-info-close" (click)="deselectShop()" title="Fermer">✕</button>
-          </div>
-          <div class="shop-info-body">
-            <p class="shop-info-label">Boutique sélectionnée</p>
-            <p class="shop-info-name">{{ selectedShop.name }}</p>
-          </div>
-        </div>
-      }
     </div>
   </z-card>
 </div>

@@ -26,7 +26,9 @@ import {ZardSelectComponent, ZardSelectItemComponent} from '@/shared/components/
 import {AngularTiptapEditorComponent} from '@flogeez/angular-tiptap-editor';
 import {ZardFormImports} from '@/shared/components/form';
 import {ZardCalendarComponent} from '@/shared/components/calendar';
+import {ColorPickerDirective} from 'ngx-color-picker';
 import { ShopVisualizationComponent } from './shop/components/shop-visualization/shop-visualization.component';
+import { ShopInfoSheetComponent } from './shop/components/shop-info-sheet/shop-info-sheet.component';
 import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.component';
 
 @NgModule({
@@ -38,6 +40,7 @@ import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.comp
     ShopRequestStatusListComponent,
     RejectShopRequestComponent,
     ShopVisualizationComponent,
+    ShopInfoSheetComponent,
   ],
     imports: [
         CommonModule,
@@ -64,7 +67,8 @@ import {DashboardComponent} from '@/modules/admin/dashboard/pages/dashboard.comp
         ZardSelectItemComponent,
         AngularTiptapEditorComponent,
         ...ZardFormImports,
-        ZardCalendarComponent
+        ZardCalendarComponent,
+        ColorPickerDirective,
     ],
   providers: [DatePipe]
 })
