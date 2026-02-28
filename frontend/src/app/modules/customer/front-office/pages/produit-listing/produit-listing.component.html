@@ -1,0 +1,42 @@
+<section class="listing">
+
+  <!-- Header -->
+  <div class="listing__header">
+    <div class="listing__title-block">
+      <span class="listing__subtitle">Everyday Humans</span>
+      <h1 class="listing__title">Our Products</h1>
+    </div>
+    <span class="listing__count">{{ filteredProducts.length }} products</span>
+  </div>
+
+  <!-- Filters -->
+  <div class="listing__filters">
+    @for (filter of filters; track filter) {
+      <button
+        class="listing__filter-btn"
+        [class.active]="activeFilter === filter"
+        (click)="setFilter(filter)"
+      >
+        {{ filter }}
+      </button>
+    }
+  </div>
+
+  <!-- Product Grid -->
+  <div class="listing__grid">
+    @for (product of filteredProducts; track product.code) {
+      <app-product-block
+        [category]="product.category"
+        [imageUrl]="product.imageUrl"
+        [imageAlt]="product.imageAlt"
+        [code]="product.code"
+        [type]="product.type"
+      />
+    } @empty {
+      <div class="listing__empty">
+        No products found for this category.
+      </div>
+    }
+  </div>
+
+</section>
