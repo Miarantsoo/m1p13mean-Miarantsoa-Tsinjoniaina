@@ -20,6 +20,15 @@ const routes: Routes = [
       ),
     // canActivate: [AuthGuard],
     // data: { roles: ['PARAMETRAGE'] },
+  },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./modules/shop/shop.module').then(
+        (m) => m.ShopModule,
+      ),
+    // canActivate: [AuthGuard],
+    // data: { roles: ['PARAMETRAGE'] },
   }
 ];
 
