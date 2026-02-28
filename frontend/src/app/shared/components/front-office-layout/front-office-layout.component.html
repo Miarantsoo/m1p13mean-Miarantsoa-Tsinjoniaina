@@ -24,7 +24,7 @@
           <a class="header__nav-link font-bold" style="cursor:pointer; position:relative;" (click)="openPanier(); menuOpen = false">
             <span class="header__nav-index font-normal">{{ i + 1 }}.</span> {{ link.label }}
             @if (cartService.totalCount() > 0) {
-              <span class="header__cart-badge">{{ cartService.totalCount() }}</span>
+              <span class="header__cart-badge">({{ cartService.totalCount() }})</span>
             }
           </a>
         }
