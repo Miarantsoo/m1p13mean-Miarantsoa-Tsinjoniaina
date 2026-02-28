@@ -7,27 +7,33 @@ import {AuthCallbackComponent} from '@/modules/customer/auth/pages/auth-callback
 import {
   CreateShopRequestComponent
 } from '@/modules/customer/shop-restaurant/pages/create-shop-request/create-shop-request.component';
+import {FrontOfficeLayoutComponent} from '@/shared/components/front-office-layout/front-office-layout.component';
+import {ProduitListingComponent} from '@/modules/customer/front-office/pages/produit-listing/produit-listing.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SidebarComponent,
+    component: FrontOfficeLayoutComponent,
     children : [
       {
-        path: 'auth/register',
-        component: RegisterComponent
-      },
-      {
-        path: 'auth/login',
-        component: LoginComponent
-      },
-      {
-        path: 'auth/callback',
-        component: AuthCallbackComponent
+        path: "",
+        component: ProduitListingComponent
       },
       { path: 'shop-request/add', component: CreateShopRequestComponent },
     ]
-  }
+  },
+  {
+    path: 'auth/register',
+    component: RegisterComponent
+  },
+  {
+    path: 'auth/login',
+    component: LoginComponent
+  },
+  {
+    path: 'auth/callback',
+    component: AuthCallbackComponent
+  },
 ];
 
 @NgModule({

@@ -18,6 +18,10 @@ import { AuthCallbackComponent } from './auth/pages/auth-callback/auth-callback.
 import { CreateShopRequestComponent } from './shop-restaurant/pages/create-shop-request/create-shop-request.component';
 import {AngularTiptapEditorComponent} from "@flogeez/angular-tiptap-editor";
 import {FileToUrlPipe} from '@/shared/pipes/file-to-url.pipe';
+import {ProduitListingComponent} from '@/modules/customer/front-office/pages/produit-listing/produit-listing.component';
+import {ZardPaginationComponent} from '@/shared/components/pagination';
+import {ProductBlockComponent} from '@/modules/customer/front-office/components/product-block/product-block.component';
+import {ProductDetailComponent} from '@/modules/customer/front-office/pages/product-detail/product-detail.component';
 
 
 
@@ -26,7 +30,10 @@ import {FileToUrlPipe} from '@/shared/pipes/file-to-url.pipe';
     RegisterComponent,
     LoginComponent,
     AuthCallbackComponent,
-    CreateShopRequestComponent
+    CreateShopRequestComponent,
+    ProductBlockComponent,
+    ProductDetailComponent,
+    ProduitListingComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +49,8 @@ import {FileToUrlPipe} from '@/shared/pipes/file-to-url.pipe';
     ZardFormMessageComponent,
     AngularTiptapEditorComponent,
     FormsModule,
-    FileToUrlPipe
+    FileToUrlPipe,
+    ZardPaginationComponent
   ]
 })
 export class CustomerModule { }
