@@ -1,4 +1,14 @@
-<div class="p-4 w-4/5">
+<div class="p-4 w-full">
+
+  <div class="shop-request-heading">
+    <span class="shop-request-heading__eyebrow">LaSoop — Espace vendeur</span>
+    <h1 class="shop-request-heading__title">Ouvrir ma boutique</h1>
+    <p class="shop-request-heading__desc">
+      Remplissez ce formulaire pour soumettre votre demande d'ouverture de boutique ou restaurant.
+      Notre équipe examinera votre dossier et vous recontactera.
+    </p>
+  </div>
+
   <z-card>
     <form [formGroup]="shopRequestForm" (ngSubmit)="submit()" class="space-y-6">
       <div class="flex gap-6 items-start">
@@ -67,7 +77,7 @@
       </div>
 
       <div>
-        <z-form-label [zRequired]="true">Lettre de motivation *</z-form-label>
+        <z-form-label [zRequired]="true">Lettre de motivation</z-form-label>
         <textarea
           z-input
           formControlName="coveringLetter"
@@ -88,7 +98,7 @@
           [zDisabled]="loading"
           [zLoading]="loading"
         >
-          {{ loading ? 'Envoi...' : 'Envoyer' }}
+          {{ loading ? 'Envoi...' : 'Envoyer ma demande' }}
         </button>
       </div>
     </form>
