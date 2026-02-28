@@ -15,10 +15,19 @@
     </button>
 
     <nav class="header__nav" [class.header__nav--open]="menuOpen">
-      @for (link of navLinks; track link.path; let i = $index) {
-        <a class="header__nav-link font-bold" [routerLink]="link.path" routerLinkActive="header__nav-link--active" (click)="menuOpen = false">
-          <span class="header__nav-index font-normal">{{ i + 1 }}.</span> {{ link.label }}
-        </a>
+      @for (link of navLinks; track link.label; let i = $index) {
+        @if (link.path) {
+          <a class="header__nav-link font-bold" [routerLink]="link.path" routerLinkActive="header__nav-link--active" (click)="menuOpen = false">
+            <span class="header__nav-index font-normal">{{ i + 1 }}.</span> {{ link.label }}
+          </a>
+        } @else {
+          <a class="header__nav-link font-bold" style="cursor:pointer; position:relative;" (click)="openPanier(); menuOpen = false">
+            <span class="header__nav-index font-normal">{{ i + 1 }}.</span> {{ link.label }}
+            @if (cartService.totalCount() > 0) {
+              <span class="header__cart-badge">{{ cartService.totalCount() }}</span>
+            }
+          </a>
+        }
       }
       <span class="header__nav-dot"></span>
     </nav>
@@ -36,8 +45,12 @@
       <span class="footer__copy">&copy; RASOLOFOARIMANGA Miarantsoa Ainaharison - RANDRIAMIRADO Nasandratriniavo Tsinjoniaina</span>
     </div>
     <div class="footer__right">
-      @for (link of navLinks; track link.path; let i = $index) {
-        <a class="footer__link" [routerLink]="link.path">{{ link.label }}</a>
+      @for (link of navLinks; track link.label; let i = $index) {
+        @if (link.path) {
+          <a class="footer__link" [routerLink]="link.path">{{ link.label }}</a>
+        } @else {
+          <a class="footer__link" style="cursor:pointer;" (click)="openPanier()">{{ link.label }}</a>
+        }
       }
     </div>
   </div>
