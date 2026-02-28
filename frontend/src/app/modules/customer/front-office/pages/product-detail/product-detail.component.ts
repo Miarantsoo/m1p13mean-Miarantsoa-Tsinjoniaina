@@ -1,5 +1,6 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import {Product} from '@/modules/customer/front-office/models/front-office.model';
+import {CartService} from '@/modules/customer/front-office/services/cart.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -8,6 +9,7 @@ import {Product} from '@/modules/customer/front-office/models/front-office.model
   styleUrl: './product-detail.component.scss',
 })
 export class ProductDetailComponent {
+  private cartService = inject(CartService);
   product: Product = {
     brand: 'Everyday Humans',
     name: 'Oh My Bod! Sunscreen Lotion',
@@ -58,6 +60,7 @@ export class ProductDetailComponent {
   }
 
   addToCart(): void {
+    this.cartService.add(this.product);
     this.cartState.set('added');
     setTimeout(() => this.cartState.set('idle'), 2000);
   }
