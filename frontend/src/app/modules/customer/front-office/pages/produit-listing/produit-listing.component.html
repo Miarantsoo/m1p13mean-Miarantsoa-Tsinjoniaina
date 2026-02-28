@@ -1,30 +1,103 @@
 <section class="listing">
 
-  <!-- Header -->
   <div class="listing__header">
     <div class="listing__title-block">
-      <span class="listing__subtitle">Everyday Humans</span>
-      <h1 class="listing__title">Our Products</h1>
+      <span class="listing__subtitle">{{ shopName }}</span>
+      <h1 class="listing__title">Produits</h1>
     </div>
-    <span class="listing__count">{{ filteredProducts.length }} products</span>
+
+    <div class="listing__toolbar">
+      <div class="listing__search">
+        <svg class="listing__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          class="listing__search-input"
+          type="text"
+          placeholder="Rechercher un produit…"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </div>
+
+      <div class="listing__filter-wrapper">
+        <button
+          class="listing__filter-btn-icon"
+          [class.active]="filterOpen() || hasActiveFilters"
+          (click)="toggleFilter(); $event.stopPropagation()"
+          title="Filtres"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6"  x2="20" y2="6"/><line x1="8"  y1="12" x2="16" y2="12"/>
+            <line x1="11" y1="18" x2="13" y2="18"/>
+          </svg>
+          Filtres
+          @if (hasActiveFilters) {
+            <span class="listing__filter-dot"></span>
+          }
+        </button>
+
+        <!-- Popover -->
+        @if (filterOpen()) {
+          <div class="listing__popover" (click)="$event.stopPropagation()">
+            <div class="listing__popover-header">
+              <span class="listing__popover-title">Filtres</span>
+              @if (hasActiveFilters) {
+                <button class="listing__popover-reset" (click)="resetFilters()">Réinitialiser</button>
+              }
+            </div>
+
+            <!-- Catégorie -->
+            <div class="listing__popover-section">
+              <span class="listing__popover-label">Catégorie</span>
+              <div class="listing__cat-list">
+                @for (cat of categories; track cat) {
+                  <button
+                    class="listing__cat-btn"
+                    [class.active]="activeCategory() === cat"
+                    (click)="setCategory(cat)"
+                  >{{ cat }}</button>
+                }
+              </div>
+            </div>
+
+            <div class="listing__popover-section">
+              <span class="listing__popover-label">
+                Prix &nbsp;
+                <strong>{{ priceMin() }} €</strong> — <strong>{{ priceMax() }} €</strong>
+              </span>
+              <div class="listing__range-wrap">
+
+                <input
+                  class="listing__range listing__range--min"
+                  type="range"
+                  [min]="0"
+                  [max]="maxPriceLimit"
+                  [value]="priceMin()"
+                  (input)="onPriceMinChange(+$any($event.target).value)"
+                />
+
+                <input
+                  class="listing__range listing__range--max"
+                  type="range"
+                  [min]="0"
+                  [max]="maxPriceLimit"
+                  [value]="priceMax()"
+                  (input)="onPriceMaxChange(+$any($event.target).value)"
+                />
+              </div>
+              <div class="listing__range-labels">
+                <span>0 €</span><span>{{ maxPriceLimit }} €</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
   </div>
 
-  <!-- Filters -->
-  <div class="listing__filters">
-    @for (filter of filters; track filter) {
-      <button
-        class="listing__filter-btn"
-        [class.active]="activeFilter === filter"
-        (click)="setFilter(filter)"
-      >
-        {{ filter }}
-      </button>
-    }
-  </div>
-
-  <!-- Product Grid -->
   <div class="listing__grid">
-    @for (product of filteredProducts; track product.code) {
+    @for (product of paginatedProducts(); track product.code) {
       <app-product-block
         [category]="product.category"
         [imageUrl]="product.imageUrl"
@@ -34,9 +107,20 @@
       />
     } @empty {
       <div class="listing__empty">
-        No products found for this category.
+        Aucun produit trouvé pour ces critères.
       </div>
     }
   </div>
+
+
+  @if (totalPages() > 1) {
+    <div class="listing__pagination">
+      <z-pagination
+        [zPageIndex]="currentPage()"
+        [zTotal]="totalPages()"
+        (zPageIndexChange)="goToPage($event)"
+      />
+    </div>
+  }
 
 </section>
