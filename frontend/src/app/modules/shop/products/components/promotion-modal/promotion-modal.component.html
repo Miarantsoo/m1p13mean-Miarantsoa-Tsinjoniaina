@@ -1,0 +1,143 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <z-card class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Ajouter une promotion</h3>
+      <button class="close-button" (click)="onClose()">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="product-info">
+        <img [src]="product.photo" [alt]="product.name" class="product-image">
+        <div>
+          <h4 class="product-name">{{ product.name }}</h4>
+          <p class="product-price">Prix actuel: {{ product.price | number:'1.0-0' }} Ar</p>
+        </div>
+      </div>
+
+      <form [formGroup]="promotionForm" (ngSubmit)="onSubmit()" class="promo-form">
+        <div class="form-group">
+          <label class="form-label">
+            Type de réduction <span class="required">*</span>
+          </label>
+          <select
+            z-input
+            formControlName="discountType"
+            class="w-full"
+          >
+            <option value="percentage">Pourcentage (%)</option>
+            <option value="fixed">Montant fixe (Ar)</option>
+          </select>
+        </div>
+
+        <!-- Valeur de la réduction -->
+        <div class="form-group">
+          <label class="form-label">
+            Valeur de la réduction <span class="required">*</span>
+          </label>
+          <input
+            z-input
+            type="number"
+            formControlName="discountValue"
+            [class.border-red-500]="submitted && f['discountValue'].errors"
+            class="w-full"
+            [placeholder]="f['discountType'].value === 'percentage' ? 'Ex: 20' : 'Ex: 5000'"
+            min="1"
+          />
+          <div *ngIf="submitted && f['discountValue'].errors" class="error-message">
+            <p *ngIf="f['discountValue'].errors['required']">La valeur est obligatoire</p>
+            <p *ngIf="f['discountValue'].errors['min']">La valeur doit être supérieure à 0</p>
+          </div>
+        </div>
+
+        <!-- Aperçu du prix -->
+        <div class="price-preview" *ngIf="f['discountValue'].value">
+          <div class="preview-label">Aperçu du prix :</div>
+          <div class="preview-prices">
+            <span class="original-price">{{ product.price | number:'1.0-0' }} Ar</span>
+            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+            <span class="new-price">{{ getEstimatedPrice() | number:'1.0-0' }} Ar</span>
+          </div>
+        </div>
+
+        <!-- Date de début -->
+        <div class="form-group">
+          <label class="form-label">
+            Date de début <span class="required">*</span>
+          </label>
+          <input
+            z-input
+            type="date"
+            formControlName="startDate"
+            [min]="minDate"
+            [class.border-red-500]="submitted && f['startDate'].errors"
+            class="w-full"
+          />
+          <div *ngIf="submitted && f['startDate'].errors" class="error-message">
+            <p *ngIf="f['startDate'].errors['required']">La date de début est obligatoire</p>
+          </div>
+        </div>
+
+        <!-- Date de fin -->
+        <div class="form-group">
+          <label class="form-label">
+            Date de fin <span class="required">*</span>
+          </label>
+          <input
+            z-input
+            type="date"
+            formControlName="endDate"
+            [min]="minDate"
+            [class.border-red-500]="submitted && (f['endDate'].errors || promotionForm.errors?.['invalidDateRange'])"
+            class="w-full"
+          />
+          <div *ngIf="submitted && f['endDate'].errors" class="error-message">
+            <p *ngIf="f['endDate'].errors['required']">La date de fin est obligatoire</p>
+          </div>
+          <div *ngIf="submitted && promotionForm.errors?.['invalidDateRange']" class="error-message">
+            <p>La date de fin doit être après la date de début</p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Description (optionnel)</label>
+          <textarea
+            z-input
+            formControlName="description"
+            rows="3"
+            class="w-full resize-none"
+            placeholder="Ex: Promotion de rentrée, Soldes d'été..."
+          ></textarea>
+        </div>
+
+        <!-- Boutons -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="onClose()"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="btn-submit"
+          >
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            Créer la promotion
+          </button>
+        </div>
+      </form>
+    </div>
+  </z-card>
+</div>

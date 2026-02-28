@@ -1,0 +1,62 @@
+<div class="product-page">
+
+  <div class="product-image-section">
+    <div class="image-container">
+      <img [src]="product.imageUrl" [alt]="product.name" class="product-img" />
+    </div>
+  </div>
+
+  <div class="product-details">
+    <div class="brand-name">{{ product.brand }}</div>
+    <h1 class="product-title">{{ product.name }}</h1>
+
+    <div class="rating-row">
+      <div class="stars">
+        @for (star of stars(); track $index) {
+          <svg class="star" viewBox="0 0 24 24">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              fill="currentColor"
+            />
+          </svg>
+        }
+      </div>
+      <span class="review-count">{{ product.reviewCount }} reviews</span>
+    </div>
+
+    <div class="price-row">
+      <span class="price-current">${{ currentPrice() | number: '1.2-2' }}</span>
+      <span class="price-old">${{ product.originalPrice | number: '1.2-2' }}</span>
+      <span class="discount-badge">{{ product.discount }}%</span>
+    </div>
+
+    <p class="description">{{ product.description }}</p>
+
+    <div class="actions-row">
+      <div class="quantity-selector">
+        <button class="qty-btn" (click)="decrementQty()">−</button>
+        <span class="qty-value">{{ quantity() }}</span>
+        <button class="qty-btn" (click)="incrementQty()">+</button>
+      </div>
+
+      <button
+        class="add-to-cart-btn uppercase"
+        [class.added]="cartState() === 'added'"
+        (click)="addToCart()"
+      >
+        {{ cartButtonText() }}
+      </button>
+
+      <button
+        class="wishlist-btn"
+        [class.liked]="isWishlisted()"
+        (click)="toggleWishlist()"
+      >
+        <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<!-- Planning simplifié -->
+<div class="planning-wrapper">
+  <div class="card">
+    <div class="calendar-header">
+      <h2 class="calendar-title">Planning des Boutiques</h2>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="calendar-container">
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="selectedEvent" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Détails de l'événement</h3>
+      <button class="btn-close" (click)="closeModal()">
+        ×
+      </button>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="modal-body">
+      <img
+        [src]="selectedEvent.image"
+        [alt]="selectedEvent.name"
+        class="shop-image"
+      />
+
+      <div class="event-info">
+        <div class="info-row">
+          <span class="icon">🏪</span>
+          <span class="info-label">Boutique :</span>
+          <span class="info-value">{{ selectedEvent.name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="icon">🕐</span>
+          <span class="info-label">Début :</span>
+          <span class="info-value">{{ selectedEvent.start | date:'HH:mm' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="icon">🕐</span>
+          <span class="info-label">Fin :</span>
+          <span class="info-value">{{ selectedEvent.end | date:'HH:mm' }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="selectedEvent.email">
+          <span class="icon">📧</span>
+          <span class="info-label">Email :</span>
+          <span class="info-value">{{ selectedEvent.email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="closeModal()">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>

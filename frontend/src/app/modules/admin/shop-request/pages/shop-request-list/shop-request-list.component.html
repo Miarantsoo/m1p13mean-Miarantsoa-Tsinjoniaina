@@ -1,0 +1,13 @@
+<div class="h-fit w-full">
+  <z-tab-group (zTabChange)="onTabChange($event)">
+    <z-tab label="Nouvelle">
+      <app-shop-request-status-list #newTab [status]="'new'"></app-shop-request-status-list>
+    </z-tab>
+    <z-tab label="En attente">
+      <app-shop-request-status-list #pendingTab [status]="'pending'"></app-shop-request-status-list>
+    </z-tab>
+    <z-tab label="Rejetée">
+      <app-shop-request-status-list #rejectedTab [status]="'rejected'"></app-shop-request-status-list>
+    </z-tab>
+  </z-tab-group>
+</div>
