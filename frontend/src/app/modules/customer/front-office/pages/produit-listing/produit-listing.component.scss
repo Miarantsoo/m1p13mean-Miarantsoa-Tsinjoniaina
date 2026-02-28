@@ -1,0 +1,167 @@
+$bg: #f5f0ea;
+$bg-card: #e8e5e0;
+$white: #ffffff;
+$text: #1a1a1a;
+$text-muted: #6b6b6b;
+$accent: #2d2d2d;
+$border: #d4cfc7;
+$font-display: 'Playfair Display', Georgia, serif;
+$font-body: 'DM Sans', system-ui, sans-serif;
+
+
+@mixin transition($props: all, $duration: 0.25s, $easing: ease) {
+  transition: $props $duration $easing;
+}
+
+@mixin responsive($breakpoint: 800px) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes staggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+:host {
+  display: block;
+  font-family: $font-body;
+  color: $text;
+}
+
+
+.listing {
+  //max-width: 1120px;
+  margin: 0 auto;
+  //padding: 48px 24px;
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid $border;
+  }
+
+  &__title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: $text-muted;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.15;
+
+    @include responsive {
+      font-size: 28px;
+    }
+  }
+
+  &__count {
+    font-size: 14px;
+    color: $text-muted;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  &__filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  &__filter-btn {
+    padding: 10px 22px;
+    border: 1.5px solid $border;
+    border-radius: 100px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-muted;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    @include transition;
+
+    &:hover {
+      border-color: $accent;
+      color: $text;
+    }
+
+    &.active {
+      background: $accent;
+      color: $white;
+      border-color: $accent;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+
+    @include responsive(1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include responsive(560px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+    }
+
+    // Stagger animation on cards
+    app-product-block {
+      animation: staggerIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+      @for $i from 1 through 12 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 0.07}s;
+        }
+      }
+    }
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 64px 24px;
+    font-size: 15px;
+    color: $text-muted;
+    border: 1.5px dashed $border;
+    border-radius: 12px;
+  }
+}
