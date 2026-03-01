@@ -8,34 +8,34 @@
     class="p-0!"
   >
     <nav [class]="'flex h-full flex-col overflow-hidden ' + (sidebarCollapsed() ? 'gap-1 p-1 pt-4' : 'gap-4 p-4')">
-      <z-sidebar-group>
-        @if (!sidebarCollapsed()) {
-          <z-sidebar-group-label>Main</z-sidebar-group-label>
-        }
-        @for (item of mainMenuItems; track item.label) {
-          <button
-            type="button"
-            z-button
-            zType="ghost"
-            [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
-            [zTooltip]="sidebarCollapsed() ? item.label : ''"
-            zPosition="right"
-          >
-            <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />
-            @if (!sidebarCollapsed()) {
-              <span>{{ item.label }}</span>
-            }
-          </button>
-        }
-      </z-sidebar-group>
+<!--      <z-sidebar-group>-->
+<!--        @if (!sidebarCollapsed()) {-->
+<!--          <z-sidebar-group-label>Main</z-sidebar-group-label>-->
+<!--        }-->
+<!--        @for (item of mainMenuItems(); track item.label) {-->
+<!--          <button-->
+<!--            type="button"-->
+<!--            z-button-->
+<!--            zType="ghost"-->
+<!--            (click)="navigateTo(item.route)"-->
+<!--            [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"-->
+<!--            [zTooltip]="sidebarCollapsed() ? item.label : ''"-->
+<!--            zPosition="right"-->
+<!--          >-->
+<!--            <z-icon [zType]="item.icon" [class]="sidebarCollapsed() ? '' : 'mr-2'" />-->
+<!--            @if (!sidebarCollapsed()) {-->
+<!--              <span>{{ item.label }}</span>-->
+<!--            }-->
+<!--          </button>-->
+<!--        }-->
+<!--      </z-sidebar-group>-->
 
       <z-sidebar-group>
         @if (!sidebarCollapsed()) {
-          <z-sidebar-group-label>Workspace</z-sidebar-group-label>
+          <z-sidebar-group-label>Espace de travail</z-sidebar-group-label>
         }
-        @for (item of workspaceMenuItems; track item.label) {
+        @for (item of workspaceMenuItems(); track item.label) {
           @if (item.submenu) {
-            <!-- Wrap in a container to maintain scope -->
             <ng-container>
               <button
                 type="button"
@@ -58,7 +58,11 @@
               <ng-template #itemSubmenu>
                 <div z-menu-content class="w-48">
                   @for (subitem of item.submenu; track subitem.label) {
-                    <button type="button" z-menu-item>{{ subitem.label }}</button>
+                    <button
+                      type="button"
+                      z-menu-item
+                      (click)="navigateTo(subitem.route)"
+                    >{{ subitem.label }}</button>
                   }
                 </div>
               </ng-template>
@@ -68,6 +72,7 @@
               type="button"
               z-button
               zType="ghost"
+              (click)="navigateTo(item.route)"
               [class]="sidebarCollapsed() ? 'justify-center' : 'justify-start'"
               [zTooltip]="sidebarCollapsed() ? item.label : ''"
               zPosition="right"
@@ -91,12 +96,12 @@
                 (sidebarCollapsed() ? 'm-2 p-0' : 'p-2')
               "
         >
-          <z-avatar zSrc="https://zardui.com/images/avatar/imgs/avatar_image.jpg" zAlt="Zard UI" />
+<!--          <z-avatar zSrc="https://zardui.com/images/avatar/imgs/avatar_image.jpg" zAlt="Zard UI" />-->
 
           @if (!sidebarCollapsed()) {
-            <div>
-              <span class="font-medium">zardui</span>
-              <div class="text-xs">test&#64;zardui.com</div>
+            <div class="overflow-hidden">
+              <span class="font-medium truncate block">{{ currentUser()?.fullname ?? 'Utilisateur' }}</span>
+              <div class="text-xs truncate">{{ currentUser()?.email ?? '' }}</div>
             </div>
 
             <z-icon zType="chevrons-up-down" class="ml-auto" />
@@ -108,10 +113,6 @@
             <button type="button" z-menu-item>
               <z-icon zType="user" class="mr-2" />
               Profile
-            </button>
-            <button type="button" z-menu-item>
-              <z-icon zType="settings" class="mr-2" />
-              Settings
             </button>
             <z-divider zSpacing="sm" />
             <button type="button" z-menu-item (click)="logoutUser()">
@@ -135,10 +136,15 @@
         <z-divider zOrientation="vertical" class="ml-2 h-4" />
 
         <z-breadcrumb zWrap="wrap" zAlign="start">
-          <z-breadcrumb-item [routerLink]="['/docs/components/layout']">Home</z-breadcrumb-item>
-          <z-breadcrumb-item [routerLink]="['/']">
-            <span aria-current="page">Components</span>
-          </z-breadcrumb-item>
+          @for (crumb of breadcrumbs(); track crumb.route; let last = $last) {
+            @if (last) {
+              <z-breadcrumb-item [routerLink]="[]">
+                <span aria-current="page">{{ crumb.label }}</span>
+              </z-breadcrumb-item>
+            } @else {
+              <z-breadcrumb-item [routerLink]="[crumb.route]">{{ crumb.label }}</z-breadcrumb-item>
+            }
+          }
         </z-breadcrumb>
       </div>
 
@@ -147,7 +153,7 @@
       </div>
     </z-content>
     <z-footer class="h-16 justify-center align-center border-t px-12 text-white">
-      <div class="border-none text-muted-foreground flex w-full items-center justify-center text-sm">© Miarantsoa - Tsinjoniaina</div>
+      <div class="border-none text-muted-foreground flex w-full items-center justify-center text-sm">© RASOLOFOARIMANGA Miarantsoa Ainaharison - RANDRIAMIRADO Nasandratriniavo Tsinjoniaina</div>
     </z-footer>
   </z-layout>
 </z-layout>
