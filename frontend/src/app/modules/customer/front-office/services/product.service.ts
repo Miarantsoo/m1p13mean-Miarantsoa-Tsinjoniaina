@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpService } from '@/core/services/http/http.service';
 import { Product, ProductListResponse, Category } from '../models/front-office.model';
 
@@ -9,6 +10,11 @@ export interface ProductFilters {
   search?: string;
   page?: number;
   limit?: number;
+}
+
+interface BackendProductResponse {
+  success: boolean;
+  data: Product;
 }
 
 @Injectable({
@@ -40,7 +46,9 @@ export class ProductService extends HttpService {
   }
 
   getProductById(id: string): Observable<Product> {
-    return this.doGet<Product>(id);
+    return this.doGet<BackendProductResponse>(id).pipe(
+      map(response => response.data)
+    );
   }
 
   getCategories(): Observable<{ success: boolean; data: Category[] }> {

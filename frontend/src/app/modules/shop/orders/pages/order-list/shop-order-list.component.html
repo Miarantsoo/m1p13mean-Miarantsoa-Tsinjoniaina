@@ -1,0 +1,104 @@
+<div class="h-fit w-full p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Commandes</h1>
+  </div>
+
+  <!-- Filtres -->
+  <div class="flex gap-2 mb-6 flex-wrap">
+    @for (f of filters; track f.value) {
+      <button
+        z-button
+        [zType]="activeFilter === f.value ? 'default' : 'outline'"
+        zSize="sm"
+        (click)="setFilter(f.value)"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center items-center py-12">
+      <span class="text-gray-400">Chargement des commandes...</span>
+    </div>
+  } @else if (filteredOrders.length === 0) {
+    <div class="flex justify-center items-center py-12">
+      <span class="text-gray-400">Aucune commande trouvée.</span>
+    </div>
+  } @else {
+    <div class="orders-grid">
+      @for (order of filteredOrders; track order._id) {
+        <z-card class="order-card">
+          <div class="order-card__header">
+            <div class="order-card__client">
+              <span class="font-semibold text-sm">
+                {{ order.user.first_name }} {{ order.user.last_name }}
+              </span>
+              <span class="text-xs text-gray-400">{{ order.user.email }}</span>
+            </div>
+            <z-badge [zType]="$any(statusBadgeTypes[order.status])" zShape="pill">
+              {{ statusLabels[order.status] }}
+            </z-badge>
+          </div>
+
+          <div class="order-card__dates">
+            <div class="order-card__date-item">
+              <span class="text-xs text-gray-400">Commandé le</span>
+              <span class="text-sm">{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="order-card__date-item">
+              <span class="text-xs text-gray-400">Retrait le</span>
+              <span class="text-sm font-semibold">{{ order.pickupDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="order-card__items">
+            @for (item of order.items; track item.product._id) {
+              <div class="order-card__item">
+                <img
+                  class="order-card__item-img"
+                  [src]="item.product.photo || 'assets/images/default-product.jpg'"
+                  [alt]="item.product.name"
+                />
+                <div class="order-card__item-info">
+                  <span class="text-sm">{{ item.product.name }}</span>
+                  <span class="text-xs text-gray-400">x{{ item.quantity }} — {{ item.priceAtOrder | number:'1.2-2' }} € / unité</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="order-card__footer">
+            <div class="order-card__total">
+              <span class="text-sm text-gray-500">Total</span>
+              <span class="text-base font-bold">{{ getOrderTotal(order) | number:'1.2-2' }} €</span>
+            </div>
+
+            <div class="order-card__actions">
+              @if (getNextStatus(order.status); as nextStatus) {
+                <button
+                  z-button
+                  zSize="sm"
+                  (click)="updateStatus(order._id, nextStatus)"
+                >
+                  Marquer comme « {{ getNextStatusLabel(order.status) }} »
+                </button>
+              }
+              @if (order.status === 'pending') {
+                <button
+                  z-button
+                  zType="outline"
+                  zSize="sm"
+                  (click)="updateStatus(order._id, 'cancelled')"
+                >
+                  Annuler
+                </button>
+              }
+            </div>
+          </div>
+        </z-card>
+      }
+    </div>
+  }
+</div>
+

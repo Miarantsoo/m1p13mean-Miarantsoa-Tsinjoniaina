@@ -1,12 +1,26 @@
-<div class="card">
+<div class="card" (click)="goToDetail()">
+
+  @if (promotion?.isActive) {
+    <span class="card__promo-badge">{{ discountLabel }}</span>
+  }
+
   <span class="card__category">{{ category }}</span>
 
   <div class="card__image-wrapper">
     <img class="card__image" [src]="imageUrl" [alt]="imageAlt" />
   </div>
 
-  <div class="card__footer">
-    <span class="card__code">{{ code }}</span>
+  <div class="card__body">
     <span class="card__type">{{ type }}</span>
+
+    <div class="card__price-row">
+      @if (promoPrice !== null) {
+        <span class="card__price-current">{{ promoPrice | number: '1.2-2' }} MGA</span>
+        <span class="card__price-old">{{ price | number: '1.2-2' }} MGA</span>
+      } @else {
+        <span class="card__price-current">{{ price | number: '1.2-2' }} MGA</span>
+      }
+    </div>
   </div>
+
 </div>

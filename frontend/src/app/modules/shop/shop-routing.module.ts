@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {SidebarComponent} from '@/shared/components/sidebar/sidebar.component';
 import {ProductListComponent} from '@/modules/shop/products/pages/product-list/product-list.component';
 import {ProductFormComponent} from '@/modules/shop/products/pages/product-form/product-form.component';
+import {ShopOrderListComponent} from '@/modules/shop/orders/pages/order-list/shop-order-list.component';
 
 
 
@@ -18,7 +19,11 @@ const routes: Routes = [
             { path: 'add',        component: ProductFormComponent },
             { path: 'edit/:id',   component: ProductFormComponent }
           ]
-        }
+        },
+      {
+        path: 'orders',
+        component: ShopOrderListComponent
+      }
     ]
   }
 ];

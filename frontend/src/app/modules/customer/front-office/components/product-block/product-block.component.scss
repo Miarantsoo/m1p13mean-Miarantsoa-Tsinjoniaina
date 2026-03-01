@@ -1,19 +1,50 @@
+$bg-card:      #eae5dc;
+$text:         #1a1a1a;
+$text-muted:   #6b6b6b;
+$green:        #4a7c59;
+$green-light:  #e8f0e4;
+$price-old:    #999;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
 .card {
-  background-color: #e8e5e0;
+  background-color: $bg-card;
   padding: .25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
 
   &:hover {
     opacity: 0.9;
   }
 
+  &__promo-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    background: $green-light;
+    color: $green;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
   &__category {
     font-size: 0.75rem;
-    color: #888;
+    color: $text-muted;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -32,17 +63,41 @@
     }
   }
 
-  &__footer {
+  &__body {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
   }
 
-  &__code,
   &__type {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #111;
+    color: $text;
     letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  &__price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  &__price-current {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $text;
+  }
+
+  &__price-old {
+    font-size: 0.85rem;
+    color: $price-old;
+    text-decoration: line-through;
   }
 }

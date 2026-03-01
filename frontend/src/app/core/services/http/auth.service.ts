@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import {LoginUserRequest, RegisterUserRequest} from '@/modules/customer/auth/models/user.model';
 import {environment} from '@environment/environment.development';
 import {Shop} from '@/modules/admin/shop/models/shop.model';
+import {CartService} from '@/modules/customer/front-office/services/cart.service';
 
 export interface User {
   id: string;
@@ -37,7 +38,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   login(userData: LoginUserRequest): Observable<AuthResponse> {
@@ -63,6 +65,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem(this.USER_SHOP);
     this.currentUserSubject.next(null);
+    this.cartService.onLogout();
     this.router.navigate(['/auth/login']);
   }
 
@@ -98,6 +101,9 @@ export class AuthService {
     localStorage.setItem(this.USER_SHOP, JSON.stringify(response.shop));
     this.currentUserSubject.next(response.user);
     this.currentShopSubject.next(response.shop);
+
+    // Fusionner le panier invité dans le panier de l'utilisateur connecté
+    this.cartService.onLogin(response.user.id);
   }
 
   private getUserFromStorage(): User | null {
