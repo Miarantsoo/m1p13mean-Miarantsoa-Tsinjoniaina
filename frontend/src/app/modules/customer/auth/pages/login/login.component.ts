@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {LoginUserRequest} from '@/modules/customer/auth/models/user.model';
 import {AuthService} from '@/core/services/http/auth.service';
 
@@ -10,20 +10,28 @@ import {AuthService} from '@/core/services/http/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   registerForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  private route = inject(ActivatedRoute);
+
+  private redirectUrl = ""
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+  }
+
+  ngOnInit(): void {
+    this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
+    console.log(this.redirectUrl)
   }
 
   onSubmit(): void {
@@ -41,7 +49,7 @@ export class LoginComponent {
 
       this.authService.login(userData).subscribe({
         next: () => {
-          this.router.navigate(['/admin/planning']);
+          this.router.navigate([this.redirectUrl]);
         },
         error: (error) => {
           console.log(error.error?.message);

@@ -28,10 +28,6 @@ const routes: Routes = [
       },
       {
         path: 'shop-request',
-        component: ShopRequestComponent
-      },
-      {
-        path: 'shop-request/list',
         component: ShopRequestListComponent
       },
       {

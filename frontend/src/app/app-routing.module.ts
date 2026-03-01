@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {ROUTES} from '@/core/configs/navigation/navigation.constant';
+import {authGuard} from '@/core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -9,8 +10,8 @@ const routes: Routes = [
       import('./modules/admin/admin.module').then(
         (m) => m.AdminModule,
       ),
-    // canActivate: [AuthGuard],
-    // data: { roles: ['PARAMETRAGE'] },
+    canActivate: [authGuard],
+    data: { roles: ['admin'] },
   },
   {
     path: '',
@@ -18,8 +19,6 @@ const routes: Routes = [
       import('./modules/customer/customer.module').then(
         (m) => m.CustomerModule,
       ),
-    // canActivate: [AuthGuard],
-    // data: { roles: ['PARAMETRAGE'] },
   },
   {
     path: ROUTES.SHOP,
@@ -27,8 +26,8 @@ const routes: Routes = [
       import('./modules/shop/shop.module').then(
         (m) => m.ShopModule,
       ),
-    // canActivate: [AuthGuard],
-    // data: { roles: ['PARAMETRAGE'] },
+    canActivate: [authGuard],
+    data: { roles: ['shop'] },
   }
 ];
 

@@ -59,6 +59,7 @@ import {
   Monitor,
   Moon,
   MoveRight,
+  Package,
   Palette,
   PanelLeft,
   Plus,
@@ -73,6 +74,7 @@ import {
   Square,
   SquareLibrary,
   Star,
+  Store,
   Sun,
   SunMoon,
   Tablet,
@@ -190,6 +192,8 @@ export const ZARD_ICONS = {
   'user-plus': UserPlus,
   'credit-card': CreditCard,
   activity: Activity,
+  package: Package,
+  store: Store,
 } as const satisfies Record<string, LucideIconData>;
 
 export declare type ZardIcon = keyof typeof ZARD_ICONS | LucideIconData;
