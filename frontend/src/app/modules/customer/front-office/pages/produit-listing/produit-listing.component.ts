@@ -1,6 +1,6 @@
 import { Component, computed, signal, HostListener, ElementRef, inject, OnInit } from '@angular/core';
-import { Product, Category } from '../../models/front-office.model';
-import { ProductService } from '../../services/product.service';
+import { Product, Category } from '@/modules/customer/front-office/models/front-office.model';
+import { ProductService } from '@/modules/customer/front-office/services/product.service';
 
 const PAGE_SIZE = 10;
 
