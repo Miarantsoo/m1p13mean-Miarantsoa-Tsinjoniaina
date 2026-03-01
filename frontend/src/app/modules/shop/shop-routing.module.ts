@@ -12,18 +12,13 @@ const routes: Routes = [
     component: SidebarComponent,
     children: [
       {
-        path: 'shop',
-        children: [
-          {
-            path: 'products',
-            children: [
-              { path: '',           component: ProductListComponent },
-              { path: 'add',        component: ProductFormComponent },
-              { path: 'edit/:id',   component: ProductFormComponent }
-            ]
-          }
-        ]
-      }
+          path: 'products',
+          children: [
+            { path: '',           component: ProductListComponent },
+            { path: 'add',        component: ProductFormComponent },
+            { path: 'edit/:id',   component: ProductFormComponent }
+          ]
+        }
     ]
   }
 ];

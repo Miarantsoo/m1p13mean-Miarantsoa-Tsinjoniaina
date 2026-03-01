@@ -8,7 +8,6 @@ $border: #d4cfc7;
 $font-display: 'Playfair Display', Georgia, serif;
 $font-body: 'DM Sans', system-ui, sans-serif;
 
-
 @mixin transition($props: all, $duration: 0.25s, $easing: ease) {
   transition: $props $duration $easing;
 }
@@ -19,29 +18,20 @@ $font-body: 'DM Sans', system-ui, sans-serif;
   }
 }
 
-
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes staggerIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes popoverIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 :host {
   display: block;
@@ -49,20 +39,26 @@ $font-body: 'DM Sans', system-ui, sans-serif;
   color: $text;
 }
 
-
 .listing {
-  //max-width: 1120px;
   margin: 0 auto;
-  //padding: 48px 24px;
   animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 
+  // ── Header ──────────────────────────────────────────────
   &__header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 32px;
     padding-bottom: 24px;
     border-bottom: 1px solid $border;
+
+    @include responsive(640px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
   }
 
   &__title-block {
@@ -84,43 +80,215 @@ $font-body: 'DM Sans', system-ui, sans-serif;
     font-size: 36px;
     font-weight: 600;
     line-height: 1.15;
-
-    @include responsive {
-      font-size: 28px;
-    }
+    @include responsive { font-size: 28px; }
+    @include responsive(640px) { font-size: 24px; }
   }
 
   &__count {
-    font-size: 14px;
+    font-size: 13px;
     color: $text-muted;
     font-weight: 500;
     white-space: nowrap;
+    align-self: flex-end;
+
+    @include responsive(640px) {
+      align-self: flex-start;
+    }
   }
 
-  &__filters {
+  // ── Toolbar (search + filter button) ────────────────────
+  &__toolbar {
     display: flex;
+    align-items: center;
     gap: 10px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+
+    @include responsive(640px) {
+      width: 100%;
+      flex: none;
+      justify-content: stretch;
+    }
   }
 
-  &__filter-btn {
-    padding: 10px 22px;
+  // ── Search bar ──────────────────────────────────────────
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 320px;
+    min-width: 0;
+
+    @include responsive(640px) {
+      max-width: none;
+      flex: 1;
+    }
+  }
+
+  &__search-icon {
+    position: absolute;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    color: $text-muted;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  &__search-input {
+    width: 100%;
+    padding: 9px 14px 9px 36px;
     border: 1.5px solid $border;
     border-radius: 100px;
-    background: transparent;
+    background: $white;
+    font-family: inherit;
+    font-size: 13px;
+    color: $text;
+    outline: none;
+    @include transition(border-color);
+
+    &::placeholder { color: $text-muted; }
+    &:focus { border-color: $accent; }
+
+    @include responsive(640px) {
+      //font-size: 16px;
+      padding: 11px 14px 11px 38px;
+    }
+  }
+
+  // ── Filter wrapper + button ──────────────────────────────
+  &__filter-wrapper {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__filter-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: 1.5px solid $border;
+    border-radius: 100px;
+    background: $white;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
     color: $text-muted;
-    letter-spacing: 0.02em;
     cursor: pointer;
+    position: relative;
     @include transition;
 
-    &:hover {
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    &:hover, &.active {
       border-color: $accent;
       color: $text;
     }
+
+    &.active {
+      background: $accent;
+      color: $white;
+    }
+  }
+
+  &__filter-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e53935;
+    border: 1.5px solid $white;
+  }
+
+  // ── Popover ─────────────────────────────────────────────
+  &__popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 100;
+    min-width: 280px;
+    background: $white;
+    border: 1.5px solid $border;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    padding: 20px;
+    animation: popoverIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    @include responsive(640px) {
+      right: 0;
+      left: auto;
+      min-width: 0;
+      width: min(320px, calc(100vw - 24px));
+    }
+  }
+
+  &__popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  &__popover-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: $text;
+  }
+
+  &__popover-reset {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    color: #e53935;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__popover-section {
+    & + & { margin-top: 20px; padding-top: 20px; border-top: 1px solid $border; }
+  }
+
+  &__popover-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: $text-muted;
+    margin-bottom: 12px;
+  }
+
+  // ── Category buttons inside popover ────────────────────
+  &__cat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__cat-btn {
+    padding: 6px 16px;
+    border: 1.5px solid $border;
+    border-radius: 100px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-muted;
+    cursor: pointer;
+    @include transition;
+
+    &:hover { border-color: $accent; color: $text; }
 
     &.active {
       background: $accent;
@@ -129,28 +297,71 @@ $font-body: 'DM Sans', system-ui, sans-serif;
     }
   }
 
+  // ── Dual range slider ───────────────────────────────────
+  &__range-wrap {
+    position: relative;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &__range {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: $border;
+    outline: none;
+    cursor: pointer;
+    @include transition(background);
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: $accent;
+      border: 2px solid $white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: $accent;
+      border: 2px solid $white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+  }
+
+  &__range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: $text-muted;
+    margin-top: 4px;
+  }
+
+  // ── Grid ────────────────────────────────────────────────
   &__grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 
-    @include responsive(1024px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    @include responsive(1024px) { grid-template-columns: repeat(3, 1fr); }
+    @include responsive(560px)  { grid-template-columns: repeat(2, 1fr); gap: 5px; }
 
-    @include responsive(560px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 5px;
-    }
-
-    // Stagger animation on cards
     app-product-block {
       animation: staggerIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-
       @for $i from 1 through 12 {
-        &:nth-child(#{$i}) {
-          animation-delay: #{$i * 0.07}s;
-        }
+        &:nth-child(#{$i}) { animation-delay: #{$i * 0.07}s; }
       }
     }
   }
@@ -163,5 +374,14 @@ $font-body: 'DM Sans', system-ui, sans-serif;
     color: $text-muted;
     border: 1.5px dashed $border;
     border-radius: 12px;
+  }
+
+  // ── Pagination ──────────────────────────────────────────
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid $border;
   }
 }
