@@ -49,6 +49,12 @@ export class LoginComponent implements OnInit{
 
       this.authService.login(userData).subscribe({
         next: () => {
+          const role = this.authService.getCurrentUser()?.role
+          if (role === 'admin') {
+            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
+          } else if (role === 'shop') {
+            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop';
+          }
           this.router.navigate([this.redirectUrl]);
         },
         error: (error) => {

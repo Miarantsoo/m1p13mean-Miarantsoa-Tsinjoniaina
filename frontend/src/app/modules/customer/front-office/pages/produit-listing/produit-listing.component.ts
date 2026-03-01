@@ -1,13 +1,6 @@
-import { Component, computed, signal, HostListener, ElementRef, inject } from '@angular/core';
-
-interface Product {
-  category: string;
-  imageUrl: string;
-  imageAlt: string;
-  code: string;
-  type: string;
-  price: number;
-}
+import { Component, computed, signal, HostListener, ElementRef, inject, OnInit } from '@angular/core';
+import { Product, Category } from '../../models/front-office.model';
+import { ProductService } from '../../services/product.service';
 
 const PAGE_SIZE = 10;
 
@@ -17,52 +10,88 @@ const PAGE_SIZE = 10;
   templateUrl: './produit-listing.component.html',
   styleUrl: './produit-listing.component.scss'
 })
-export class ProduitListingComponent {
+export class ProduitListingComponent implements OnInit {
   private elRef = inject(ElementRef);
+  private productService = inject(ProductService);
 
   shopName = "Global";
-  categories: string[] = ['All', 'Skincare', 'Sunscreen', 'Body', 'Face'];
+  categories = signal<Category[]>([]);
+  products = signal<Product[]>([]);
+  isLoading = signal(false);
 
-  products: Product[] = [
-    { category: 'Sunscreen', imageUrl: 'assets/images/product-1.jpg', imageAlt: 'Oh My Bod SPF50',      code: 'OMB-50', type: 'SPF50 Body',        price: 28 },
-    { category: 'Skincare',  imageUrl: 'assets/images/product-2.jpg', imageAlt: 'Resting Beach Face',   code: 'RBF-30', type: 'SPF30 Face',        price: 34 },
-    { category: 'Body',      imageUrl: 'assets/images/product-3.jpg', imageAlt: 'In A Good Light',      code: 'IGL-40', type: 'Tinted SPF40',      price: 22 },
-    { category: 'Sunscreen', imageUrl: 'assets/images/product-4.jpg', imageAlt: 'Rose From Above',      code: 'RFA-50', type: 'SPF50 Mist',        price: 19 },
-    { category: 'Face',      imageUrl: 'assets/images/product-5.jpg', imageAlt: 'Off Duty Moisturizer', code: 'ODM-15', type: 'SPF15 Face',        price: 41 },
-    { category: 'Body',      imageUrl: 'assets/images/product-6.jpg', imageAlt: 'Skin Saver Gel',       code: 'SSG-25', type: 'Aloe Body Gel',     price: 16 },
-    { category: 'Skincare',  imageUrl: 'assets/images/product-2.jpg', imageAlt: 'Glow Serum',           code: 'GLS-10', type: 'Vitamin C Serum',  price: 55 },
-    { category: 'Sunscreen', imageUrl: 'assets/images/product-1.jpg', imageAlt: 'Sun Shield',           code: 'SSH-60', type: 'SPF60 Sport',       price: 30 },
-    { category: 'Face',      imageUrl: 'assets/images/product-5.jpg', imageAlt: 'Night Repair',         code: 'NRP-00', type: 'Night Cream',       price: 48 },
-    { category: 'Body',      imageUrl: 'assets/images/product-3.jpg', imageAlt: 'Hydra Lotion',         code: 'HYL-20', type: 'Body Lotion',       price: 14 },
-    { category: 'Face',      imageUrl: 'assets/images/product-5.jpg', imageAlt: 'Clay Mask',            code: 'CLM-05', type: 'Detox Mask',        price: 26 },
-    { category: 'Skincare',  imageUrl: 'assets/images/product-2.jpg', imageAlt: 'Retinol Boost',        code: 'RTB-01', type: 'Retinol Serum',    price: 62 },
-  ];
-
-  readonly maxPriceLimit = Math.max(...this.products.map(p => p.price));
+  readonly maxPriceLimit = computed(() => {
+    const prices = this.products().map(p => p.price);
+    return prices.length > 0 ? Math.max(...prices) : 100;
+  });
 
   // --- Filter state ---
   searchQuery  = signal('');
-  activeCategory = signal('All');
+  activeCategoryId = signal<string | null>(null);
   priceMin     = signal(0);
-  priceMax     = signal(this.maxPriceLimit);
+  priceMax     = signal(100);
   filterOpen   = signal(false);
 
   // --- Pagination state ---
   currentPage  = signal(1);
   pageSize     = PAGE_SIZE;
 
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadProducts();
+  }
+
+  loadCategories(): void {
+    this.productService.getCategories().subscribe({
+      next: (response) => {
+        this.categories.set([{ _id: 'all', name: 'All' } as Category, ...response.data]);
+      },
+      error: (err) => console.error('Erreur chargement catégories:', err)
+    });
+  }
+
+  loadProducts(): void {
+    this.isLoading.set(true);
+    const filters = {
+      categoryId: this.activeCategoryId() || undefined,
+      search: this.searchQuery() || undefined,
+      available: true,
+      page: 1,
+      limit: 1000
+    };
+
+    this.productService.getAllProducts(filters).subscribe({
+      next: (response) => {
+        this.products.set(response.data ?? []);
+        this.isLoading.set(false);
+        const prices = (response.data ?? []).map(p => p.price);
+        if (prices.length > 0) {
+          this.priceMax.set(Math.max(...prices));
+        }
+      },
+      error: (err) => {
+        console.error('Erreur chargement produits:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
   // --- Computed ---
   filteredProducts = computed(() => {
     const q   = this.searchQuery().toLowerCase().trim();
-    const cat = this.activeCategory();
+    const catId = this.activeCategoryId();
     const min = this.priceMin();
     const max = this.priceMax();
 
-    return this.products.filter(p =>
-      (cat === 'All' || p.category === cat) &&
-      p.price >= min && p.price <= max &&
-      (!q || p.imageAlt.toLowerCase().includes(q) || p.type.toLowerCase().includes(q) || p.code.toLowerCase().includes(q))
-    );
+    return this.products().filter(p => {
+      const categoryMatch = !catId || catId === 'all' ||
+        (typeof p.category === 'object' ? p.category._id === catId : p.category === catId);
+      const priceMatch = p.price >= min && p.price <= max;
+      const searchMatch = !q ||
+        p.name.toLowerCase().includes(q) ||
+        (p.shortDescription?.toLowerCase().includes(q) || false);
+
+      return categoryMatch && priceMatch && searchMatch;
+    });
   });
 
   totalPages = computed(() => Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize)));
@@ -73,8 +102,8 @@ export class ProduitListingComponent {
   });
 
   // --- Methods ---
-  setCategory(cat: string): void {
-    this.activeCategory.set(cat);
+  setCategory(catId: string | null): void {
+    this.activeCategoryId.set(catId === 'all' ? null : catId);
     this.currentPage.set(1);
   }
 
@@ -104,14 +133,18 @@ export class ProduitListingComponent {
   }
 
   resetFilters(): void {
-    this.activeCategory.set('All');
+    this.activeCategoryId.set(null);
     this.priceMin.set(0);
-    this.priceMax.set(this.maxPriceLimit);
+    this.priceMax.set(this.maxPriceLimit());
     this.currentPage.set(1);
   }
 
   get hasActiveFilters(): boolean {
-    return this.activeCategory() !== 'All' || this.priceMin() > 0 || this.priceMax() < this.maxPriceLimit;
+    return this.activeCategoryId() !== null || this.priceMin() > 0 || this.priceMax() < this.maxPriceLimit();
+  }
+
+  getCategoryName(product: Product): string {
+    return typeof product.category === 'object' ? product.category.name : 'Sans catégorie';
   }
 
   @HostListener('document:click', ['$event'])

@@ -51,12 +51,12 @@
             <div class="listing__popover-section">
               <span class="listing__popover-label">Catégorie</span>
               <div class="listing__cat-list">
-                @for (cat of categories; track cat) {
+                @for (cat of categories(); track cat._id) {
                   <button
                     class="listing__cat-btn"
-                    [class.active]="activeCategory() === cat"
-                    (click)="setCategory(cat)"
-                  >{{ cat }}</button>
+                    [class.active]="activeCategoryId() === cat._id || (cat._id === 'all' && !activeCategoryId())"
+                    (click)="setCategory(cat._id)"
+                  >{{ cat.name }}</button>
                 }
               </div>
             </div>
@@ -72,7 +72,7 @@
                   class="listing__range listing__range--min"
                   type="range"
                   [min]="0"
-                  [max]="maxPriceLimit"
+                  [max]="maxPriceLimit()"
                   [value]="priceMin()"
                   (input)="onPriceMinChange(+$any($event.target).value)"
                 />
@@ -81,13 +81,13 @@
                   class="listing__range listing__range--max"
                   type="range"
                   [min]="0"
-                  [max]="maxPriceLimit"
+                  [max]="maxPriceLimit()"
                   [value]="priceMax()"
                   (input)="onPriceMaxChange(+$any($event.target).value)"
                 />
               </div>
               <div class="listing__range-labels">
-                <span>0 €</span><span>{{ maxPriceLimit }} €</span>
+                <span>0 €</span><span>{{ maxPriceLimit() }} €</span>
               </div>
             </div>
           </div>
@@ -96,21 +96,25 @@
     </div>
   </div>
 
-  <div class="listing__grid">
-    @for (product of paginatedProducts(); track product.code) {
-      <app-product-block
-        [category]="product.category"
-        [imageUrl]="product.imageUrl"
-        [imageAlt]="product.imageAlt"
-        [code]="product.code"
-        [type]="product.type"
-      />
-    } @empty {
-      <div class="listing__empty">
-        Aucun produit trouvé pour ces critères.
-      </div>
-    }
-  </div>
+  @if (isLoading()) {
+    <div class="listing__loading">Chargement des produits...</div>
+  } @else {
+    <div class="listing__grid">
+      @for (product of paginatedProducts(); track product._id) {
+        <app-product-block
+          [category]="getCategoryName(product)"
+          [imageUrl]="product.photo || 'assets/images/default-product.jpg'"
+          [imageAlt]="product.name"
+          [code]="product._id"
+          [type]="product.shortDescription || ''"
+        />
+      } @empty {
+        <div class="listing__empty">
+          Aucun produit trouvé pour ces critères.
+        </div>
+      }
+    </div>
+  }
 
 
   @if (totalPages() > 1) {
