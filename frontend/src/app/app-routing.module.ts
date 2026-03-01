@@ -11,7 +11,7 @@ const routes: Routes = [
         (m) => m.AdminModule,
       ),
     canActivate: [authGuard],
-    // data: { roles: ['PARAMETRAGE'] },
+    data: { roles: ['admin'] },
   },
   {
     path: '',
@@ -19,8 +19,6 @@ const routes: Routes = [
       import('./modules/customer/customer.module').then(
         (m) => m.CustomerModule,
       ),
-    // canActivate: [AuthGuard],
-    // data: { roles: ['PARAMETRAGE'] },
   },
   {
     path: ROUTES.SHOP,
@@ -29,7 +27,7 @@ const routes: Routes = [
         (m) => m.ShopModule,
       ),
     canActivate: [authGuard],
-    // data: { roles: ['PARAMETRAGE'] },
+    data: { roles: ['shop'] },
   }
 ];
 
