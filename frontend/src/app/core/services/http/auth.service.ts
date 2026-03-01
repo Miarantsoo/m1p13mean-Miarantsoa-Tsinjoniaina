@@ -9,7 +9,8 @@ import {Shop} from '@/modules/admin/shop/models/shop.model';
 export interface User {
   id: string;
   email: string;
-  fullname?: string;
+  first_name?: string;
+  last_name?: string;
   role: 'admin' | 'shop' | 'customer';
 }
 
