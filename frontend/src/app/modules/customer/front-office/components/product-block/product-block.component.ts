@@ -38,7 +38,7 @@ export class ProductBlockComponent {
 
   goToDetail(): void {
     if (this.productId) {
-      this.router.navigate(['details', this.productId]);
+      this.router.navigate(['/details', this.productId]);
     }
   }
 }
