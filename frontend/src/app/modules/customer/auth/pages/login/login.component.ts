@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
     console.log(this.redirectUrl)
   }
 
