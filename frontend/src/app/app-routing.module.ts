@@ -22,7 +22,7 @@ const routes: Routes = [
     // data: { roles: ['PARAMETRAGE'] },
   },
   {
-    path: '',
+    path: ROUTES.SHOP,
     loadChildren: () =>
       import('./modules/shop/shop.module').then(
         (m) => m.ShopModule,
