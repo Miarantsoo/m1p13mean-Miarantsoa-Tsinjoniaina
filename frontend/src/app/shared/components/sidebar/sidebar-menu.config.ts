@@ -44,14 +44,8 @@ export const ADMIN_MENU: SidebarMenuConfig = {
 
 export const SHOP_MENU: SidebarMenuConfig = {
   workspace: [
-    {
-      icon: 'package',
-      label: 'Produits',
-      submenu: [
-        { label: 'Liste des produits', route: '/shop/products' },
-        { label: 'Ajouter un produit', route: '/shop/products/add' },
-      ],
-    },
+        { icon: 'package', label: 'Liste des produits', route: '/shop/products' },
+        { icon: 'package', label: 'Ajouter un produit', route: '/shop/products/add' },
   ],
   rootLabel: 'Shop',
   rootRoute: '/shop/products',
