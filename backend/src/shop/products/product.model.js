@@ -38,7 +38,9 @@ const productSchema = new mongoose.Schema({
         ref: "Category"
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 productSchema.virtual('promotion', {

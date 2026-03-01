@@ -25,6 +25,7 @@ export const getAllProducts = async (filters = {}) => {
     const products = await Product.find(query)
         .populate('shop', 'name')
         .populate('category', 'name')
+        .populate('promotion')
         .sort({ createdAt: -1 })
         .limit(parseInt(limit))
         .skip(skip);
@@ -49,7 +50,8 @@ export const getProductsByShop = async (shopId, filters = {}) => {
 export const getProductById = async (productId) => {
     const product = await Product.findById(productId)
         .populate('shop', 'name')
-        .populate('category', 'name');
+        .populate('category', 'name')
+        .populate('promotion');
 
     if (!product) {
         throw new Error('Produit non trouvé');
