@@ -5,22 +5,21 @@
     </div>
   } @else {
     <ul class="panier__list">
-      @for (item of cartService.items(); track item.product.name) {
+      @for (item of cartService.items(); track item.product._id) {
         <li class="panier__item">
-          <img class="panier__img" [src]="item.product.imageUrl" [alt]="item.product.name" />
+          <img class="panier__img" [src]="item.product.photo || 'assets/images/default-product.jpg'" [alt]="item.product.name" />
           <div class="panier__info">
-            <span class="panier__brand">{{ item.product.brand }}</span>
             <span class="panier__name">{{ item.product.name }}</span>
             <span class="panier__price">
-              {{ (item.product.originalPrice * (1 - item.product.discount / 100)) | number:'1.2-2' }} €
+              {{ cartService.getItemPrice(item) | number:'1.2-2' }} €
             </span>
           </div>
           <div class="panier__qty">
-            <button class="panier__qty-btn" (click)="cartService.decrement(item.product.name)">−</button>
+            <button class="panier__qty-btn" (click)="cartService.decrement(item.product._id)">−</button>
             <span class="panier__qty-val">{{ item.quantity }}</span>
-            <button class="panier__qty-btn" (click)="cartService.increment(item.product.name)">+</button>
+            <button class="panier__qty-btn" (click)="cartService.increment(item.product._id)">+</button>
           </div>
-          <button class="panier__remove" (click)="cartService.remove(item.product.name)" title="Supprimer">✕</button>
+          <button class="panier__remove" (click)="cartService.remove(item.product._id)" title="Supprimer">✕</button>
         </li>
       }
     </ul>

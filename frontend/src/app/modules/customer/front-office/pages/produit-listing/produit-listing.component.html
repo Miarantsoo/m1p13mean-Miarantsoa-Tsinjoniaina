@@ -64,7 +64,7 @@
             <div class="listing__popover-section">
               <span class="listing__popover-label">
                 Prix &nbsp;
-                <strong>{{ priceMin() }} €</strong> — <strong>{{ priceMax() }} €</strong>
+                <strong>{{ priceMin() }} MGA</strong> — <strong>{{ priceMax() }} MGA</strong>
               </span>
               <div class="listing__range-wrap">
 
@@ -87,7 +87,7 @@
                 />
               </div>
               <div class="listing__range-labels">
-                <span>0 €</span><span>{{ maxPriceLimit() }} €</span>
+                <span>0 MGA</span><span>{{ maxPriceLimit() }} MGA</span>
               </div>
             </div>
           </div>
@@ -102,11 +102,14 @@
     <div class="listing__grid">
       @for (product of paginatedProducts(); track product._id) {
         <app-product-block
+          [productId]="product._id"
           [category]="getCategoryName(product)"
           [imageUrl]="product.photo || 'assets/images/default-product.jpg'"
           [imageAlt]="product.name"
           [code]="product._id"
           [type]="product.shortDescription || ''"
+          [price]="product.price"
+          [promotion]="product.promotion"
         />
       } @empty {
         <div class="listing__empty">
