@@ -49,7 +49,7 @@ export class AuthCallbackComponent implements OnInit {
           } else if (user.role === 'shop') {
             this.router.navigate(['/shop/dashboard']);
           } else {
-            this.router.navigate(['/customer']);
+            this.router.navigate(['/']);
           }
         } catch (e) {
           this.errorMessage = 'Erreur lors du traitement de la réponse';
