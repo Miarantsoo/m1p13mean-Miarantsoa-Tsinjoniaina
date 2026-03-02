@@ -19,36 +19,30 @@
 
   </div>
 
-  <!-- ===== AVANCEMENT ANNUEL ===== -->
-
   <div class="card">
-
     <!-- HEADER -->
     <div class="card-top">
       <h2 class="card-title">Avancement des loyers</h2>
 
       <div class="year-selector">
-
-        <button
-          *ngIf="selectedYear > currentYear - 1"
-          (click)="changeYear(-1)">
+        <button *ngIf="selectedYear > currentYear - 2" (click)="changeYear(-1)">
           ←
         </button>
 
         <span>{{ selectedYear }}</span>
 
-        <button
-          *ngIf="selectedYear < currentYear"
-          (click)="changeYear(1)">
+        <button *ngIf="selectedYear < currentYear + 1" (click)="changeYear(1)">
           →
         </button>
-
       </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="rent-table">
+    <!-- LOADING / ERROR -->
+    <div *ngIf="isLoading" class="loading">Chargement des boutiques...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
+    <!-- TABLE -->
+    <div *ngIf="!isLoading && !errorMessage" class="rent-table">
       <!-- TABLE HEADER -->
       <div class="table-row table-header">
         <div class="col-shop">Boutique</div>
@@ -58,28 +52,22 @@
       </div>
 
       <!-- TABLE BODY -->
-      <div
-        class="table-row"
-        *ngFor="let shop of shops">
-
+      <div class="table-row" *ngFor="let shop of shops; let i = index">
         <div class="col-shop shop-name">
           {{ shop.name }}
+          <!-- Optionnel : petit indicateur d'index pour debug -->
+          <!-- <small style="color: #999;">({{ i }})</small> -->
         </div>
 
-        <div
-          class="col-month"
-          *ngFor="let month of getYearData(shop)"
-        >
-          <div
-            class="status-square"
-            [ngClass]="month.toLowerCase()">
-          </div>
+        <div class="col-month" *ngFor="let status of getYearData(shop)">
+          <div class="status-square" [ngClass]="status.toLowerCase()"></div>
         </div>
-
       </div>
 
+      <div *ngIf="shops.length === 0" class="no-data">
+        Aucune boutique trouvée
+      </div>
     </div>
-
   </div>
 
 </div>
