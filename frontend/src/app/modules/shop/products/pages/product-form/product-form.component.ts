@@ -7,6 +7,7 @@ import { Category, Product } from '../../models/product.model';
 import { ZardCardComponent } from '@/shared/components/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { ZardInputDirective } from '@/shared/components/input';
+import {AuthService} from '@/core/services/http/auth.service';
 
 @Component({
   selector: 'app-product-form',
@@ -30,11 +31,12 @@ export class ProductFormComponent implements OnInit {
   loading = false;
   isEditMode = false;
   productId: string | null = null;
-  shopId = '69a0016ce198485ddf628ca1';
+  shopId = 'shopId';
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -42,6 +44,11 @@ export class ProductFormComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.loadCategories();
+
+    const idShop = this.authService.getCurrentUserShop()?._id;
+    if (idShop) {
+      this.shopId = idShop;
+    }
 
     this.productId = this.route.snapshot.paramMap.get('id');
     if (this.productId) {

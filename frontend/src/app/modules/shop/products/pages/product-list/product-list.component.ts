@@ -6,6 +6,7 @@ import { Category } from '../../models/product.model';
 import { ProductCategoryListComponent } from '../../components/product-category-list/product-category-list.component';
 import { ZardTabGroupComponent, ZardTabComponent } from '@/shared/components/tabs';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import {AuthService} from '@/core/services/http/auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -24,15 +25,20 @@ export class ProductListComponent implements OnInit {
   @ViewChild('allTab') allTab!: ProductCategoryListComponent;
 
   categories: Category[] = [];
-  shopId = '69a0016ce198485ddf628ca1';
+  shopId = 'shopId';
   activeTab = 0;
 
   constructor(
     private productService: ProductService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    const idShop = this.authService.getCurrentUserShop()?._id;
+      if (idShop) {
+        this.shopId = idShop;
+      }
     this.loadCategories();
   }
 
