@@ -1,61 +1,56 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpService } from '@/core/services/http/http.service'; // ajuste le chemin si nécessaire
 import { Observable } from 'rxjs';
 import { Product, ProductResponse, Category } from '../models/product.model';
-// import { environment } from '@/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
-  private apiUrl = `http://localhost:3000/api/product`;
-  private categoryUrl = `${this.apiUrl}/categories`;
+export class ProductService extends HttpService {
 
-  constructor(private http: HttpClient) {}
+  protected override endpoint = 'product';
 
-  getProductsByShop(shopId: string, filters?: {
-    categoryId?: string;
-    available?: boolean;
-    search?: string;
-    page?: number;
-    limit?: number;
-  }): Observable<ProductResponse> {
-    let params = new HttpParams();
+  getProductsByShop(
+    shopId: string,
+    filters?: {
+      categoryId?: string;
+      available?: boolean;
+      search?: string;
+      page?: number;
+      limit?: number;
+    }
+  ): Observable<ProductResponse> {
+    let params: any = { shopId };
 
-    if (filters?.categoryId) params = params.set('categoryId', filters.categoryId);
-    if (filters?.available !== undefined) params = params.set('available', filters.available.toString());
-    if (filters?.search) params = params.set('search', filters.search);
-    if (filters?.page) params = params.set('page', filters.page.toString());
-    if (filters?.limit) params = params.set('limit', filters.limit.toString());
+    if (filters?.categoryId) params.categoryId = filters.categoryId;
+    if (filters?.available !== undefined) params.available = filters.available;
+    if (filters?.search) params.search = filters.search;
+    if (filters?.page) params.page = filters.page;
+    if (filters?.limit) params.limit = filters.limit;
 
-    return this.http.get<ProductResponse>(`${this.apiUrl}/shop/${shopId}`, { params });
+    return this.doGet<ProductResponse>(`shop/${shopId}`, params);
   }
-
   getProductById(id: string): Observable<ProductResponse> {
-    return this.http.get<ProductResponse>(`${this.apiUrl}/${id}`);
+    return this.doGet<ProductResponse>(id);
   }
-
   createProduct(productData: FormData): Observable<ProductResponse> {
-    return this.http.post<ProductResponse>(this.apiUrl, productData);
+    return this.doPost<ProductResponse>('', productData);
   }
-
   updateProduct(id: string, productData: FormData): Observable<ProductResponse> {
-    return this.http.put<ProductResponse>(`${this.apiUrl}/${id}`, productData);
+    return this.doPut<ProductResponse>(id, productData);
   }
-
   deleteProduct(id: string): Observable<ProductResponse> {
-    return this.http.delete<ProductResponse>(`${this.apiUrl}/${id}`);
+    return this.doDelete<ProductResponse>(id);
   }
-
   updateStock(id: string, stock: number): Observable<ProductResponse> {
-    return this.http.patch<ProductResponse>(`${this.apiUrl}/${id}/stock`, { stock });
+    return this.doPatch<ProductResponse>(`${id}/stock`, { stock });
+  }
+  getCategories(): Observable<{ success: boolean; data: Category[] }> {
+    return this.doGet<{ success: boolean; data: Category[] }>('categories');
   }
 
-  getCategories(): Observable<{ success: boolean; data: Category[] }> {
-    return this.http.get<{ success: boolean; data: Category[] }>(this.categoryUrl);
-  }
 
   getProductStats(shopId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/shop/${shopId}/stats`);
+    return this.doGet<any>(`shop/${shopId}/stats`);
   }
 }
