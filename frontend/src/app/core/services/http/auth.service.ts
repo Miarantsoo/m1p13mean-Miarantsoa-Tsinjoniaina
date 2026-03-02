@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import {LoginUserRequest, RegisterUserRequest} from '@/modules/customer/auth/models/user.model';
-import {environment} from '@environment/environment.development';
+import {environment} from '@environment/environment';
 import {Shop} from '@/modules/admin/shop/models/shop.model';
 import {CartService} from '@/modules/customer/front-office/services/cart.service';
 
