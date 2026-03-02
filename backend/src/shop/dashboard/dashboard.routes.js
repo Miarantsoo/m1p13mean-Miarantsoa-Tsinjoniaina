@@ -4,6 +4,6 @@ import { getShopDashboard } from "@/shop/dashboard/dashboard.controller.js";
 
 const router = Router();
 
-router.get("/:shopId"/*, authenticate, authorize('shop')*/, getShopDashboard);
+router.get("/:shopId", authenticate, authorize('shop'), getShopDashboard);
 
 export default router;

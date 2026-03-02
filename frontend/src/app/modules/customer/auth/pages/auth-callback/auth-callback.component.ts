@@ -47,7 +47,7 @@ export class AuthCallbackComponent implements OnInit {
           if (user.role === 'admin') {
             this.router.navigate(['/admin/planning']);
           } else if (user.role === 'shop') {
-            this.router.navigate(['/shop']);
+            this.router.navigate(['/shop/dashboard']);
           } else {
             this.router.navigate(['/customer']);
           }

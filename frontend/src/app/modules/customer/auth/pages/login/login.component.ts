@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit{
           if (role === 'admin') {
             this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
           } else if (role === 'shop') {
-            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop';
+            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop/dashboard';
           }
           this.router.navigate([this.redirectUrl]);
         },
