@@ -5,7 +5,7 @@ import app from "@/app.js";
 import {connectDB, gracefulShutdown} from "@/database.js";
 import {runSeed} from "@/seeds/seed.js";
 
-const PORT = Number(process.env.BACKEND_PORT);
+const PORT = Number(process.env.PORT || process.env.BACKEND_PORT || 3000);
 
 const startServer = async () => {
     try {
