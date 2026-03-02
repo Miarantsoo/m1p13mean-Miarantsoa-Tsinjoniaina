@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { getShopSlots } from "@/admin/shop-slot/shop-slot.controller.js";
+import {addShopSlot, getShopSlots} from "@/admin/shop-slot/shop-slot.controller.js";
 
 const router = Router();
 
 router.get("/", getShopSlots);
+router.put("/:id/assign", addShopSlot);
 
 export default router;
 
