@@ -15,6 +15,7 @@ import promotionRoutes from "./shop/promotion/promotion.routes.js";
 import cartRoutes from "./cart/cart.routes.js";
 import orderRoutes from "./order/order.routes.js";
 import dashboardRoutes from "./admin/dashboard/dashboard.routes.js";
+import dashboardShopRoutes from "./shop/dashboard/dashboard.routes.js";
 
 import {configureGoogleOAuth} from "@/auth/google.oauth.js";
 import passport from "passport";
@@ -75,5 +76,6 @@ app.use("/api/promotions", promotionRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/dashboard-admin", dashboardRoutes);
+app.use("/api/dashboard-shop", dashboardShopRoutes);
 
 export default app;
