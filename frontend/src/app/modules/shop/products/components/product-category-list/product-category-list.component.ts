@@ -9,6 +9,7 @@ import { PromotionModalComponent } from '../promotion-modal/promotion-modal.comp
 import { ZardLoaderComponent } from '@/shared/components/loader/loader.component';
 import { ZardDividerComponent } from '@/shared/components/divider';
 import { ZardPaginationComponent } from '@/shared/components/pagination';
+import {toast} from 'ngx-sonner';
 
 @Component({
   selector: 'app-product-category-list',
@@ -118,7 +119,7 @@ export class ProductCategoryListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression du produit');
+          this.showErrorToast('Erreur lors de la suppression du produit');
         }
       });
     }
@@ -133,15 +134,29 @@ export class ProductCategoryListComponent implements OnInit {
     if (product.promotion && confirm('Êtes-vous sûr de vouloir supprimer cette promotion ?')) {
       this.promotionService.deletePromotion(product.promotion._id).subscribe({
         next: () => {
-          alert('Promotion supprimée avec succès');
+          this.showSuccesToast('Promotion supprimée avec succès');
           this.loadProducts();
         },
         error: (error: any) => {
           console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression de la promotion');
+          this.showErrorToast('Erreur lors de la suppression de la promotion');
         }
       });
     }
+  }
+
+  showSuccesToast(message: string) {
+    toast.success(message, {
+      description: '',
+      position: "top-right"
+    });
+  }
+
+  showErrorToast(message: string) {
+    toast.error(message, {
+      description: '',
+      position: "top-right"
+    });
   }
 
   closePromotionModal() {
@@ -155,13 +170,13 @@ export class ProductCategoryListComponent implements OnInit {
     this.promotionService.createPromotion(promotionData).subscribe({
       next: (response) => {
         console.log("Succès création promo :", response);
-        alert('Promotion créée avec succès');
+        this.showSuccesToast('Promotion créée avec succès');
         this.closePromotionModal();
         this.loadProducts();
       },
       error: (err) => {
         console.error("Erreur API création promo :", err);
-        alert(err.error?.message || 'Erreur lors de la création');
+        this.showErrorToast('Erreur lors de la création promo');
       },
       complete: () => console.log("Requête createPromotion terminée")
     });

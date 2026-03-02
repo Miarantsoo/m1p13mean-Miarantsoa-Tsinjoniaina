@@ -8,6 +8,7 @@ import { ZardCardComponent } from '@/shared/components/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { ZardInputDirective } from '@/shared/components/input';
 import {AuthService} from '@/core/services/http/auth.service';
+import {toast} from 'ngx-sonner';
 
 @Component({
   selector: 'app-product-form',
@@ -99,7 +100,7 @@ export class ProductFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors du chargement du produit:', error);
-        alert('Erreur lors du chargement du produit');
+        this.showErrorToast('Erreur lors du chargement du produit');
         this.router.navigate(['/shop/products']);
       }
     });
@@ -132,7 +133,7 @@ export class ProductFormComponent implements OnInit {
     }
 
     if (!this.isEditMode && !this.imageFile) {
-      alert('Veuillez sélectionner une image');
+      this.showErrorToast('Veuillez sélectionner une image');
       return;
     }
 
@@ -158,12 +159,16 @@ export class ProductFormComponent implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        alert(this.isEditMode ? 'Produit modifié avec succès' : 'Produit créé avec succès');
+        let message = 'Produit créé avec succès';
+        if(this.isEditMode){
+          message = 'Produit modifié avec succès';
+        }
+        this.showSuccesToast(message);
         this.router.navigate(['/shop/products']);
       },
       error: (error) => {
         console.error('Erreur:', error);
-        alert('Une erreur est survenue');
+        this.showErrorToast('Une erreur est survenue');
         this.loading = false;
       }
     });
@@ -171,5 +176,19 @@ export class ProductFormComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/shop/products']);
+  }
+
+  showSuccesToast(message: string) {
+    toast.success(message, {
+      description: '',
+      position: "top-right"
+    });
+  }
+
+  showErrorToast(message: string) {
+    toast.error(message, {
+      description: '',
+      position: "top-right"
+    });
   }
 }
