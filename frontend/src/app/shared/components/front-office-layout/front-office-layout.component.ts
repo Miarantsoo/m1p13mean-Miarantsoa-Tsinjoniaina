@@ -24,6 +24,7 @@ export class FrontOfficeLayoutComponent implements OnInit, OnDestroy {
   navLinks = [
     {label: 'Accueil', path: '/'},
     {label: 'Boutiques et restaurants', path: '/shops'},
+    {label: 'Ouvrir ma boutique', path: '/shop-request/add'},
     {label: 'Panier'}
   ];
 
