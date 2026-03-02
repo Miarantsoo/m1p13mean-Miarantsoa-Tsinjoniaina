@@ -10,6 +10,10 @@ export interface Shop {
   _id: string;
   name: string;
   email?: string;
+  description?: string;
+  logo_url?: string;
+  status?: string;
+  color?: string;
 }
 
 export interface Promotion {

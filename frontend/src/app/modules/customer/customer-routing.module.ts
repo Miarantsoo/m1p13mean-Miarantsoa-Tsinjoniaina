@@ -10,6 +10,7 @@ import {
 import {FrontOfficeLayoutComponent} from '@/shared/components/front-office-layout/front-office-layout.component';
 import {ProduitListingComponent} from '@/modules/customer/front-office/pages/produit-listing/produit-listing.component';
 import {ProductDetailComponent} from '@/modules/customer/front-office/pages/product-detail/product-detail.component';
+import {ShopListComponent} from '@/modules/customer/front-office/pages/shop-list/shop-list.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,8 @@ const routes: Routes = [
         path: "",
         component: ProduitListingComponent
       },
+      { path: 'shops', component: ShopListComponent },
+      { path: 'shops/:shopId', component: ProduitListingComponent },
       { path: 'shop-request/add', component: CreateShopRequestComponent },
       { path: 'details/:id', component: ProductDetailComponent },
     ]
