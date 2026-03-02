@@ -100,7 +100,7 @@
 
           @if (!sidebarCollapsed()) {
             <div class="overflow-hidden">
-              <span class="font-medium truncate block">{{ currentUser()?.fullname ?? 'Utilisateur' }}</span>
+              <span class="font-medium truncate block">{{ currentUser()?.first_name + " " + currentUser()?.last_name ?? 'Utilisateur' }}</span>
               <div class="text-xs truncate">{{ currentUser()?.email ?? '' }}</div>
             </div>
 

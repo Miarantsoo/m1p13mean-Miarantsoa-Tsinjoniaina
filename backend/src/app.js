@@ -12,6 +12,11 @@ import planningRoutes from "./admin/planning/planning.routes.js";
 import shopSlotRoutes from "./admin/shop-slot/shop-slot.routes.js";
 import productsRoutes from "./shop/products/product.routes.js";
 import promotionRoutes from "./shop/promotion/promotion.routes.js";
+import cartRoutes from "./cart/cart.routes.js";
+import orderRoutes from "./order/order.routes.js";
+import dashboardRoutes from "./admin/dashboard/dashboard.routes.js";
+import dashboardShopRoutes from "./shop/dashboard/dashboard.routes.js";
+import shopRoutes from "./shop/shop.routes.js";
 
 import {configureGoogleOAuth} from "@/auth/google.oauth.js";
 import passport from "passport";
@@ -69,5 +74,10 @@ app.use("/api/planning", planningRoutes);
 app.use("/api/shop-slots", shopSlotRoutes);
 app.use("/api/product", productsRoutes);
 app.use("/api/promotions", promotionRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/dashboard-admin", dashboardRoutes);
+app.use("/api/dashboard-shop", dashboardShopRoutes);
+app.use("/api/shops", shopRoutes);
 
 export default app;

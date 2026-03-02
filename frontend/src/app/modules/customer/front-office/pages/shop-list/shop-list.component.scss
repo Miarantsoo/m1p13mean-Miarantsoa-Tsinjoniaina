@@ -1,0 +1,159 @@
+$bg: #f5f0ea;
+$bg-card: #eae5dc;
+$white: #ffffff;
+$text: #1a1a1a;
+$text-muted: #6b6b6b;
+$accent: #2d2d2d;
+$border: #d4cfc7;
+$font-display: 'Playfair Display', Georgia, serif;
+$font-body: 'DM Sans', system-ui, sans-serif;
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+:host {
+  display: block;
+  font-family: $font-body;
+  color: $text;
+}
+
+.shop-listing {
+  margin: 0 auto;
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid $border;
+  }
+
+  &__title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: $text-muted;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.15;
+
+    @media (max-width: 800px) { font-size: 28px; }
+    @media (max-width: 640px) { font-size: 24px; }
+  }
+
+  &__loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: $text-muted;
+    font-size: 15px;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: $text-muted;
+    font-size: 15px;
+    grid-column: 1 / -1;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+}
+
+.shop-card {
+  background-color: $bg-card;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  &__banner {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__logo {
+    max-height: 80px;
+    max-width: 80%;
+    object-fit: contain;
+  }
+
+  &__initial {
+    font-family: $font-display;
+    font-size: 48px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+  }
+
+  &__body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__name {
+    font-family: $font-display;
+    font-size: 20px;
+    font-weight: 600;
+    color: $text;
+    margin: 0;
+  }
+
+  &__description {
+    font-size: 13px;
+    color: $text-muted;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__cta {
+    font-size: 13px;
+    font-weight: 600;
+    color: $accent;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    transition: letter-spacing 0.2s ease;
+
+    .shop-card:hover & {
+      letter-spacing: 1.5px;
+    }
+  }
+}
+

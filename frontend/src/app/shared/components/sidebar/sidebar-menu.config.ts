@@ -44,8 +44,10 @@ export const ADMIN_MENU: SidebarMenuConfig = {
 
 export const SHOP_MENU: SidebarMenuConfig = {
   workspace: [
+        { icon: 'layout-dashboard', label: 'Tableau de bord', route: '/shop/dashboard' },
         { icon: 'package', label: 'Liste des produits', route: '/shop/products' },
         { icon: 'package', label: 'Ajouter un produit', route: '/shop/products/add' },
+        { icon: 'inbox', label: 'Commandes', route: '/shop/orders' },
   ],
   rootLabel: 'Shop',
   rootRoute: '/shop/products',
@@ -54,6 +56,7 @@ export const SHOP_MENU: SidebarMenuConfig = {
     'products': 'Produits',
     'add': 'Ajouter',
     'edit': 'Modifier',
+    'orders': 'Commandes',
   },
 };
 

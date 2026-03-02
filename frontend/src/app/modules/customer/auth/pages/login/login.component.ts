@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit{
   private route = inject(ActivatedRoute);
 
   private redirectUrl = ""
+  private isCheckout = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +32,7 @@ export class LoginComponent implements OnInit{
 
   ngOnInit(): void {
     this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
-    console.log(this.redirectUrl)
+    this.isCheckout = this.route.snapshot.queryParams['checkout'] === 'true';
   }
 
   onSubmit(): void {
@@ -49,11 +50,23 @@ export class LoginComponent implements OnInit{
 
       this.authService.login(userData).subscribe({
         next: () => {
-          const role = this.authService.getCurrentUser()?.role
+          const role = this.authService.getCurrentUser()?.role;
+
+          if (this.isCheckout && (role === 'customer' || !role)) {
+            // Retour vers le front-office avec le flag checkout
+            const returnUrl = this.redirectUrl || '/';
+            this.router.navigate([returnUrl], {
+              queryParams: { checkout: 'true' }
+            });
+            return;
+          }
+
           if (role === 'admin') {
             this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
           } else if (role === 'shop') {
-            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop';
+            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop/dashboard';
+          } else if (role === 'customer'){
+            this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           }
           this.router.navigate([this.redirectUrl]);
         },

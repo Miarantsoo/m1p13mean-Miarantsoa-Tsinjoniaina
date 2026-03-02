@@ -4,17 +4,21 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import {LoginUserRequest, RegisterUserRequest} from '@/modules/customer/auth/models/user.model';
 import {environment} from '@environment/environment.development';
+import {Shop} from '@/modules/admin/shop/models/shop.model';
+import {CartService} from '@/modules/customer/front-office/services/cart.service';
 
 export interface User {
   id: string;
   email: string;
-  fullname?: string;
+  first_name?: string;
+  last_name?: string;
   role: 'admin' | 'shop' | 'customer';
 }
 
 export interface AuthResponse {
   accessToken: string;
   user: User;
+  shop: Shop;
 }
 
 @Injectable({
@@ -23,14 +27,19 @@ export interface AuthResponse {
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_info';
+  private readonly USER_SHOP = 'user_shop';
   private readonly API_URL = environment.apiUrl + '/api';
 
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  private currentShopSubject = new BehaviorSubject<Shop | null>(this.getShopFromStorage());
+  public currentShop$ = this.currentShopSubject.asObservable();
+
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   login(userData: LoginUserRequest): Observable<AuthResponse> {
@@ -54,7 +63,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(this.USER_SHOP);
     this.currentUserSubject.next(null);
+    this.currentShopSubject.next(null);
+    this.cartService.onLogout();
     this.router.navigate(['/auth/login']);
   }
 
@@ -70,6 +82,10 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  getCurrentUserShop(): Shop | null {
+    return this.currentShopSubject.value;
+  }
+
   hasRole(role: 'admin' | 'shop' | 'customer'): boolean {
     const user = this.getCurrentUser();
     return user?.role === role;
@@ -83,11 +99,21 @@ export class AuthService {
   private handleAuthSuccess(response: AuthResponse): void {
     localStorage.setItem(this.TOKEN_KEY, response.accessToken);
     localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+    localStorage.setItem(this.USER_SHOP, JSON.stringify(response.shop));
     this.currentUserSubject.next(response.user);
+    this.currentShopSubject.next(response.shop);
+
+    // Fusionner le panier invité dans le panier de l'utilisateur connecté
+    this.cartService.onLogin(response.user.id);
   }
 
   private getUserFromStorage(): User | null {
     const userStr = localStorage.getItem(this.USER_KEY);
     return userStr ? JSON.parse(userStr) : null;
+  }
+
+  private getShopFromStorage(): Shop | null {
+    const shopStr = localStorage.getItem(this.USER_SHOP);
+    return shopStr ? JSON.parse(shopStr) : null;
   }
 }

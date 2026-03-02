@@ -43,9 +43,9 @@
       -->
 
       <div class="price-row">
-        <span class="price-current">{{ currentPrice() | number: '1.2-2' }} €</span>
+        <span class="price-current">{{ currentPrice() | number: '1.2-2' }} MGA</span>
         @if (product()!.promotion) {
-          <span class="price-old">{{ product()!.price | number: '1.2-2' }} €</span>
+          <span class="price-old">{{ product()!.price | number: '1.2-2' }} MGA</span>
           <span class="discount-badge">{{ discountPercentage() }}%</span>
         }
       </div>

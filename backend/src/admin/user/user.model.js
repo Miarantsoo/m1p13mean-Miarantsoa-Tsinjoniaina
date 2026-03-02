@@ -87,10 +87,10 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.toPublicJSON = function() {
     return {
         id: this._id,
-        name: this.name,
+        first_name: this.first_name,
+        last_name: this.last_name,
         email: this.email,
         role: this.role,
-        avatar: this.avatar,
         provider: this.provider,
         isEmailVerified: this.isEmailVerified,
         lastLogin: this.lastLogin,

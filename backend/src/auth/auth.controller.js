@@ -1,4 +1,5 @@
 import User from '../admin/user/user.model.js';
+import Shop from '../admin/shop/shop.model.js';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -54,10 +55,13 @@ export const login = async (req, res) => {
 
     setRefreshTokenCookie(res, refreshToken);
 
+    const shop = await Shop.findOne({ owner: user._id });
+
     res.json({
       message: 'Login successful',
       accessToken,
-      user: user.toPublicJSON()
+      user: user.toPublicJSON(),
+      shop: shop || null
     });
 
   } catch (error) {
@@ -206,8 +210,12 @@ export const getProfile = async (req, res) => {
       });
     }
 
+    // Chercher la boutique dont ce user est le manager (null si aucune)
+    const shop = await Shop.findOne({ owner: user._id });
+
     res.json({
-      user
+      user,
+      shop: shop || null
     });
 
   } catch (error) {

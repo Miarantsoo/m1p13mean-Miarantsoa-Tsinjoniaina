@@ -1,6 +1,8 @@
 import { Component, computed, signal, HostListener, ElementRef, inject, OnInit } from '@angular/core';
-import { Product, Category } from '../../models/front-office.model';
-import { ProductService } from '../../services/product.service';
+import { ActivatedRoute } from '@angular/router';
+import { Product, Category } from '@/modules/customer/front-office/models/front-office.model';
+import { ProductService } from '@/modules/customer/front-office/services/product.service';
+import { ShopService } from '@/modules/customer/front-office/services/shop.service';
 
 const PAGE_SIZE = 10;
 
@@ -13,7 +15,10 @@ const PAGE_SIZE = 10;
 export class ProduitListingComponent implements OnInit {
   private elRef = inject(ElementRef);
   private productService = inject(ProductService);
+  private shopService = inject(ShopService);
+  private route = inject(ActivatedRoute);
 
+  shopId: string | null = null;
   shopName = "Global";
   categories = signal<Category[]>([]);
   products = signal<Product[]>([]);
@@ -36,6 +41,13 @@ export class ProduitListingComponent implements OnInit {
   pageSize     = PAGE_SIZE;
 
   ngOnInit(): void {
+    this.shopId = this.route.snapshot.paramMap.get('shopId');
+    if (this.shopId) {
+      this.shopService.getShopById(this.shopId).subscribe({
+        next: (shop) => this.shopName = shop.name,
+        error: () => this.shopName = 'Boutique'
+      });
+    }
     this.loadCategories();
     this.loadProducts();
   }
@@ -59,7 +71,11 @@ export class ProduitListingComponent implements OnInit {
       limit: 1000
     };
 
-    this.productService.getAllProducts(filters).subscribe({
+    const request$ = this.shopId
+      ? this.productService.getProductsByShop(this.shopId, filters)
+      : this.productService.getAllProducts(filters);
+
+    request$.subscribe({
       next: (response) => {
         this.products.set(response.data ?? []);
         this.isLoading.set(false);

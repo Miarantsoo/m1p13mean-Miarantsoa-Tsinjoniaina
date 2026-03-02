@@ -99,7 +99,7 @@ export class ProductDetailComponent implements OnInit {
   addToCart(): void {
     const prod = this.product();
     if (prod) {
-      this.cartService.add(prod);
+      this.cartService.add(prod, this.quantity());
       this.cartState.set('added');
       setTimeout(() => this.cartState.set('idle'), 2000);
     }

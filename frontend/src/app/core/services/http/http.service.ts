@@ -38,30 +38,30 @@ export class HttpService {
   ): Observable<T> {
     const requestConfig = this.buildConfig(config);
 
-    let request$: Observable<any>;
+    let request$: Observable<T>;
 
     switch (method) {
       case ApiMethod.GET:
-        request$ = this.http.get(url, requestConfig);
+        request$ = this.http.get<T>(url, requestConfig as any) as Observable<T>;
         break;
       case ApiMethod.POST:
-        request$ = this.http.post(url, body, requestConfig);
+        request$ = this.http.post<T>(url, body, requestConfig as any) as Observable<T>;
         break;
       case ApiMethod.PUT:
-        request$ = this.http.put(url, body, requestConfig);
+        request$ = this.http.put<T>(url, body, requestConfig as any) as Observable<T>;
         break;
       case ApiMethod.PATCH:
-        request$ = this.http.patch(url, body, requestConfig);
+        request$ = this.http.patch<T>(url, body, requestConfig as any) as Observable<T>;
         break;
       case ApiMethod.DELETE:
-        request$ = this.http.delete(url, requestConfig);
+        request$ = this.http.delete<T>(url, requestConfig as any) as Observable<T>;
         break;
       default:
         throw new Error(`Méthode HTTP non supportée: ${method}`);
     }
 
     return request$.pipe(
-      map((response: any) => response),
+      map((response: T) => response),
       catchError((error: HttpErrorResponse) => this.handleError(error))
     );
   }

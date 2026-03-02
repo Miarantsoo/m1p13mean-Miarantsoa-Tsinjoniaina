@@ -2,12 +2,51 @@
   <p class="text-lg font-medium">{{ shopSlot.shop?.name ?? shopSlot.category.name }}</p>
 
   @if (shopSlot.shop) {
-    <div class="flex flex-col gap-2">
-      @if (shopSlot.shop.logo_url) {
-        <img [src]="shopSlot.shop.logo_url" [alt]="shopSlot.shop.name" class="w-20 h-20 rounded-md object-cover" />
-      }
+    <div class="flex flex-col gap-4">
+      <!-- Logo et nom de la boutique -->
+      <div class="flex items-center gap-4">
+        @if (shopSlot.shop.logo_url) {
+          <img [src]="shopSlot.shop.logo_url" [alt]="shopSlot.shop.name" class="w-20 h-20 rounded-lg object-cover border" />
+        }
+        <div>
+          <p class="text-base font-semibold">{{ shopSlot.shop.name }}</p>
+          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+                [class]="shopSlot.shop.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+            {{ shopSlot.shop.status === 'active' ? 'Active' : shopSlot.shop.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Couleur de la boutique -->
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-sm">Couleur :</span>
+        <span class="w-6 h-6 rounded-full border inline-block" [style.background]="shopSlot.shop.color"></span>
+        <span class="text-sm text-muted-foreground">{{ shopSlot.shop.color }}</span>
+      </div>
+
+      <!-- Description -->
       @if (shopSlot.shop.description) {
-        <p class="text-sm text-muted-foreground">{{ shopSlot.shop.description }}</p>
+        <div>
+          <p class="font-medium text-sm mb-1">Description</p>
+          <p class="text-sm text-muted-foreground">{{ shopSlot.shop.description }}</p>
+        </div>
+      }
+
+      <!-- Manager -->
+      @if (shopSlot.shop.owner) {
+        <div class="border-t pt-3">
+          <p class="font-medium text-sm mb-2">Manager</p>
+          <div class="flex flex-col gap-1 text-sm">
+            <p>
+              <span class="font-medium">Nom :</span>
+              {{ shopSlot.shop.owner.first_name }}{{ shopSlot.shop.owner.last_name ? ' ' + shopSlot.shop.owner.last_name : '' }}
+            </p>
+            <p><span class="font-medium">Email :</span> {{ shopSlot.shop.owner.email }}</p>
+            @if (shopSlot.shop.owner.phone_number) {
+              <p><span class="font-medium">Téléphone :</span> {{ shopSlot.shop.owner.phone_number }}</p>
+            }
+          </div>
+        </div>
       }
     </div>
   }

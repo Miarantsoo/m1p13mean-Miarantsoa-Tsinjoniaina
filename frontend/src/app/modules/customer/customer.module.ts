@@ -22,6 +22,7 @@ import {ProduitListingComponent} from '@/modules/customer/front-office/pages/pro
 import {ZardPaginationComponent} from '@/shared/components/pagination';
 import {ProductBlockComponent} from '@/modules/customer/front-office/components/product-block/product-block.component';
 import {ProductDetailComponent} from '@/modules/customer/front-office/pages/product-detail/product-detail.component';
+import {ShopListComponent} from '@/modules/customer/front-office/pages/shop-list/shop-list.component';
 
 
 
@@ -33,7 +34,8 @@ import {ProductDetailComponent} from '@/modules/customer/front-office/pages/prod
     CreateShopRequestComponent,
     ProductBlockComponent,
     ProductDetailComponent,
-    ProduitListingComponent
+    ProduitListingComponent,
+    ShopListComponent
   ],
   imports: [
     CommonModule,
