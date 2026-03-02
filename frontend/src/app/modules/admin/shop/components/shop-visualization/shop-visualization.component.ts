@@ -16,8 +16,6 @@ import {ShopSlot} from '@/modules/admin/shop/models/shop.model';
 import {ShopAdminService} from '@/modules/admin/shop/services/shop-admin.service';
 import {ZardSheetService, ZardSheetRef} from '@/shared/components/sheet';
 import {ShopInfoSheetComponent} from '@/modules/admin/shop/components/shop-info-sheet/shop-info-sheet.component';
-import {ShopRequestService} from '@/modules/admin/shop-request/services/shop-request.service';
-import {ShopRequest} from '@/modules/admin/shop-request/models/shop-request.model';
 
 export interface ShopClickEvent {
   name: string;
@@ -371,15 +369,29 @@ export class ShopVisualizationComponent implements OnInit, AfterViewInit, OnDest
       const shopSlot = this.shopSlots.find(v => v.glb_node_name === mesh.name);
       if (!shopSlot) continue;
 
-      const color = shopSlot.shop?.color
+      const hasShop = !!shopSlot.shop?.color;
+      const baseColor = hasShop
         ? new THREE.Color(shopSlot.shop.color)
         : new THREE.Color(EMPTY_COLOR);
 
-      console.log(shopSlot.shop?.color, color.getHex())
+      // Assombrir la couleur pour un rendu plus foncé / accentué
+      const darkenedColor = baseColor.clone().multiplyScalar(0.55);
 
       const applyColor = (mat: THREE.Material): THREE.Material => {
         const m = (mat as THREE.MeshStandardMaterial).clone();
-        (m as THREE.MeshStandardMaterial).color = color;
+        m.color.copy(darkenedColor);
+        // Supprimer la texture diffuse pour que la couleur soit visible
+        if (m.map) {
+          m.map = null;
+        }
+        m.metalness = 0.05;
+        m.roughness = 0.4;
+        // Ajouter une émission subtile pour faire ressortir la couleur
+        if (hasShop) {
+          m.emissive.copy(baseColor);
+          m.emissiveIntensity = 0.15;
+        }
+        m.needsUpdate = true;
         return m;
       };
 
@@ -426,6 +438,20 @@ export class ShopVisualizationComponent implements OnInit, AfterViewInit, OnDest
       zOnCancel: () => {
         this.deselectShop();
       },
+    });
+
+    this.sheetRef.afterClosed().subscribe(result => {
+      if (result && (result as any).assigned) {
+        this.refreshShopSlots();
+      }
+    });
+  }
+
+  private refreshShopSlots(): void {
+    this.shopAdminService.getAll().subscribe(res => {
+      this.shopSlots = res;
+      this.applyShopColors();
+      this.deselectShop();
     });
   }
 

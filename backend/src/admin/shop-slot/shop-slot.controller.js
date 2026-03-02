@@ -11,8 +11,8 @@ export const getShopSlots = async (req, res) => {
 
 export const addShopSlot = async (req, res) => {
     try{
-        console.log(req.body);
-        const shopSlot = await createShop(req.body);
+        const slotId = req.params.id;
+        const shopSlot = await createShop(slotId, req.body);
 
         res.status(201).json({
             message: "Shop created successfully",

@@ -4,12 +4,22 @@ interface CategoryShop {
   rent_price: number
 }
 
+export interface ShopOwner {
+  _id: string;
+  first_name: string;
+  last_name?: string;
+  email: string;
+  phone_number?: string;
+  role: string;
+  avatar?: string;
+}
+
 export interface Shop {
   _id: string;
   name: string;
   description: string;
   logo_url: string;
-  owner: string;
+  owner: ShopOwner;
   shop_request: string;
   status: string;
   color: string;
