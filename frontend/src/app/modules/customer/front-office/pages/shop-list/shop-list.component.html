@@ -1,0 +1,38 @@
+<section class="shop-listing">
+  <div class="shop-listing__header">
+    <div class="shop-listing__title-block">
+      <span class="shop-listing__subtitle">Découvrez</span>
+      <h1 class="shop-listing__title">Boutiques &amp; Restaurants</h1>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="shop-listing__loading">Chargement des boutiques...</div>
+  } @else {
+    <div class="shop-listing__grid">
+      @for (shop of shops(); track shop._id) {
+        <div class="shop-card" (click)="goToShop(shop)">
+          <div class="shop-card__banner" [style.background-color]="shop.color || '#2d2d2d'">
+            @if (shop.logo_url) {
+              <img class="shop-card__logo" [src]="shop.logo_url" [alt]="shop.name" />
+            } @else {
+              <span class="shop-card__initial">{{ getInitial(shop.name) }}</span>
+            }
+          </div>
+          <div class="shop-card__body">
+            <h3 class="shop-card__name">{{ shop.name }}</h3>
+            @if (shop.description) {
+              <p class="shop-card__description">{{ shop.description }}</p>
+            }
+            <span class="shop-card__cta">Voir les produits →</span>
+          </div>
+        </div>
+      } @empty {
+        <div class="shop-listing__empty">
+          Aucune boutique disponible pour le moment.
+        </div>
+      }
+    </div>
+  }
+</section>
+
