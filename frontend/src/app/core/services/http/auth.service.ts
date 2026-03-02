@@ -65,6 +65,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem(this.USER_SHOP);
     this.currentUserSubject.next(null);
+    this.currentShopSubject.next(null);
     this.cartService.onLogout();
     this.router.navigate(['/auth/login']);
   }
