@@ -11,7 +11,7 @@
           <div class="panier__info">
             <span class="panier__name">{{ item.product.name }}</span>
             <span class="panier__price">
-              {{ cartService.getItemPrice(item) | number:'1.2-2' }} €
+              {{ cartService.getItemPrice(item) | number:'1.2-2' }} MGA
             </span>
           </div>
           <div class="panier__qty">
@@ -26,7 +26,7 @@
 
     <div class="panier__total">
       <span>Total</span>
-      <strong>{{ cartService.totalPrice() | number:'1.2-2' }} €</strong>
+      <strong>{{ cartService.totalPrice() | number:'1.2-2' }} MGA</strong>
     </div>
   }
 </div>

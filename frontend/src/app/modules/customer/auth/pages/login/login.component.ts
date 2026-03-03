@@ -33,8 +33,15 @@ export class LoginComponent implements OnInit{
   ngOnInit(): void {
     this.redirectUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/planning';
     this.isCheckout = this.route.snapshot.queryParams['checkout'] === 'true';
+    this.setDefaultValues();
   }
 
+  private setDefaultValues(): void {
+    this.registerForm.patchValue({
+      email: 'admin.lasoop@yopmail.com',
+      password: 'Admin1234!',
+    });
+  }
   onSubmit(): void {
     Object.keys(this.registerForm.controls).forEach(key => {
       this.registerForm.get(key)?.markAsTouched();
