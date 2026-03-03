@@ -8,10 +8,10 @@ const REFRESH_TOKEN_SECRET = new TextEncoder().encode(
 );
 
 
-const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRE_MINUTES + " minutes" || '15 minutes';
+const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRE_MINUTES + "m" || '15m';
 const REFRESH_TOKEN_EXPIRE_DAYS = Number(process.env.REFRESH_TOKEN_EXPIRE_DAYS) || 7;
 const maxAgeRefresh = REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 * 1000;
-const REFRESH_TOKEN_EXPIRATION = REFRESH_TOKEN_EXPIRE_DAYS + ' days';
+const REFRESH_TOKEN_EXPIRATION = REFRESH_TOKEN_EXPIRE_DAYS + 'd';
 
 
 export const generateAccessToken = async (payload) => {
