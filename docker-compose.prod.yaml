@@ -23,21 +23,10 @@ services:
     restart: always
     ports:
       - "${BACKEND_PORT:-3001}:3001"
+    env_file:
+      - .env
     environment:
-      NODE_ENV: production
-      PORT: 3001
-      MONGODB_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
-      CORS_ORIGIN: ${CORS_ORIGIN}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
-      IMGBB_API_KEY: ${IMGBB_API_KEY}
-      MAIL_HOST: ${MAIL_HOST:-}
-      MAIL_PORT: ${MAIL_PORT:-}
-      MAIL_USER: ${MAIL_USER:-}
-      MAIL_PASS: ${MAIL_PASS:-}
+      MONGO_HOST: mongodb
     depends_on:
       - mongodb
     networks:
@@ -55,6 +44,9 @@ services:
       dockerfile: Dockerfile-prod
     container_name: mean-frontend-prod
     restart: always
+    environment:
+      API_URL: ${API_URL:-http://localhost:3001}
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - "81:81"
     depends_on:
