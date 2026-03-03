@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   env: 'Production',
-  apiUrl: 'http://187.77.175.5:3001',
+  apiUrl: 'https://back.lasoop.shop',
 };
