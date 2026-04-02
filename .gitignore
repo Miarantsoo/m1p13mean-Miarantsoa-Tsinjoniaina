@@ -1,0 +1,26 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.prod
+.env.production
+
+# Ne pas ignorer le fichier exemple
+!env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (si créés localement)
+data/
